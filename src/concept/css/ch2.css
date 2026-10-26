@@ -1,0 +1,87 @@
+/* ======================= Ch.2 재귀 */
+/* 귀납적 사고 */
+.c2-bx { fill: #f6f2fd; stroke: #7a4fc9; stroke-width: 2; stroke-dasharray: 6 4; }
+.c2-bb { fill: #3b2a66; stroke: #2a1d4a; stroke-width: 2; }
+.c2-bbt { fill: #fff; font: 800 16px var(--mono); }
+.c2-bbs { fill: #d9ccf5; font-size: 13.5px; font-weight: 700; }
+.c2-base { fill: #eef9f3; stroke: #2f9e6f; stroke-width: 2.4; }
+.c2-bo { stroke: #7a4fc9; stroke-width: 1.8; fill: #fbf9ff; }
+.c2-bo.l1 { fill: #f4effd; } .c2-bo.l2 { fill: #ece4fb; } .c2-bo.l3 { fill: #e3d8f8; }
+.c2-plus { font-size: 20px; font-weight: 800; fill: #3b2a66; }
+.c2-val rect { fill: #2f9e6f; }
+.c2-valt { fill: #fff; font-size: 13px; font-weight: 800; }
+.c2-dom .dm { fill: #7a4fc9; transform-box: fill-box; transform-origin: 100% 100%; transition: transform .55s cubic-bezier(.5, 0, .7, 1.3), fill .3s; }
+.c2-dom.fall .dm { transform: rotate(62deg); fill: #b9a3e6; }
+.c2-dom.now .dm { fill: #e8890c; }
+/* 호출 스택 */
+.c2-fr .frb { fill: #fff; stroke: #c9bde6; stroke-width: 1.6; }
+.c2-fr .frn { fill: #7a4fc9; }
+.c2-fr .frt { font: 700 14px var(--mono); fill: #3b2a66; }
+.c2-fr .frl { font: 700 13.5px var(--mono); fill: #286b82; }
+.c2-fr .fre { font: 600 13.5px var(--mono); fill: #3d4245; }
+.c2-fr .fre.ret { fill: #c26a00; font-weight: 800; }
+.c2-fr .fre.done { fill: #2f9e6f; font-weight: 800; }
+.c2-fr .frw { font-size: 12px; fill: #8a9095; font-weight: 600; }
+.c2-fr .frr rect { fill: #e8890c; }
+.c2-fr .frrt { fill: #fff; font: 800 13px var(--mono); }
+.c2-fr.wait .frb { fill: #fafafa; }
+.c2-fr.run .frb, .c2-fr.focus .frb { stroke: #7a4fc9; stroke-width: 2.6; }
+.c2-fr.ret .frb { stroke: #e8890c; stroke-width: 2.6; fill: #fffaf2; }
+.c2-fr.main .frn { fill: #286b82; }
+.c2-fr.main .frt { fill: #286b82; }
+.c2-fr.done .frb { stroke: #2f9e6f; stroke-width: 2.4; fill: #f3fbf6; }
+.ar.c2-rar { stroke: #e8890c; stroke-width: 2.4; }
+/* RecursionError */
+.c2-ef rect { fill: #f1ecfb; stroke: #b9a3e6; stroke-width: 1.4; }
+.c2-ef .eft { font: 700 13.5px var(--mono); fill: #3b2a66; }
+.c2-ef.main rect { fill: #e7f3f7; stroke: #9fc6d4; }
+.c2-ef.top rect { stroke: #7a4fc9; stroke-width: 2.4; fill: #fff; }
+.c2-ef.err rect { fill: #fde8ee; stroke: #f0a3b6; }
+.c2-ef.err .eft { fill: #9e0c33; }
+.c2-gap { fill: none; stroke: #c9bde6; stroke-dasharray: 4 4; }
+.c2-gauge { fill: #f1f3f4; stroke: #d5dcdf; }
+.c2-lim { stroke: #d81247; stroke-width: 2; stroke-dasharray: 4 3; }
+.c2-gfill { fill: #7a4fc9; transition: all .5s; }
+.c2-gfill.err { fill: #d81247; }
+.c2-con { fill: #1e2b3a; }
+.c2-cont { fill: #98a8b9; font-size: 11.5px; font-weight: 700; }
+.c2-conl { fill: #d4dce5; font: 600 13px var(--mono); }
+.c2-conl.err { fill: #ff8fa6; font-weight: 800; }
+.c2-ban { fill: #d81247; filter: drop-shadow(0 6px 14px #d8124755); }
+.c2-bant { fill: #fff; font: 800 21px var(--mono); }
+.c2-bans { fill: #ffe0e8; font: 600 14px var(--mono); }
+.c2-okb { fill: #2f9e6f; filter: drop-shadow(0 6px 14px #2f9e6f44); }
+.c2-okt { fill: #fff; font-size: 16px; font-weight: 800; }
+/* 피보나치 */
+.ar.c2-fe { stroke: #b5bcc0; stroke-width: 1.8; }
+.c2-fn { fill: #fff; stroke: var(--fc); stroke-width: 2.6; }
+.c2-fn.dup { stroke: #d81247; stroke-width: 3; stroke-dasharray: 4 2.5; fill: #fff4f6; }
+.c2-fn.hit { fill: #eef9f3; stroke: #2f9e6f; }
+.c2-fnt { font: 800 13.5px var(--mono); fill: #171a1c; }
+.c2-cur { fill: #ffd23f55; stroke: #e8890c; stroke-width: 2; }
+.c2-fv rect { fill: #3b2a66; }
+.c2-fv.hit rect { fill: #2f9e6f; }
+.c2-fvt { fill: #fff; font: 800 12px var(--mono); }
+.c2-mk rect { fill: #eef9f3; stroke: #2f9e6f; stroke-width: 1.5; }
+.c2-mk.new rect { fill: #2f9e6f; }
+.c2-mk.new .c2-mkt { fill: #fff; }
+.c2-mkt { font: 800 13px var(--mono); fill: #1f6b4a; }
+/* 하노이 */
+.c2-hbase { fill: #c9bde6; }
+.c2-peg { fill: #a99bc9; }
+.c2-disk rect { stroke: #00000030; stroke-width: 1.5; }
+.c2-disk.mv rect { stroke: #171a1c; stroke-width: 2.6; }
+.c2-dt { font-size: 15px; font-weight: 800; fill: #171a1c; }
+/* 이진 탐색 포인터 */
+.c2-bp rect { fill: #171a1c; }
+.c2-bp .pa { stroke: #171a1c; stroke-width: 2; }
+.c2-bp .pt { fill: #fff; font: 700 14px var(--mono); }
+svg.c2-bs .ci { font-size: 13px; }
+svg.c2-bs .cv { font-size: 18px; }
+.c2-bp.blue rect { fill: #2f7d99; } .c2-bp.blue .pa { stroke: #2f7d99; }
+.c2-bp.red rect { fill: #d81247; } .c2-bp.red .pa { stroke: #d81247; }
+.c2-bp.ok rect { fill: #2f9e6f; } .c2-bp.ok .pa { stroke: #2f9e6f; }
+/* 단원 그림 글자 키우기 (그림이 줄어들어 보이므로) */
+svg[class*="c2-"] .lbl { font-size: 14.5px; }
+svg[class*="c2-"] .lbl.sm { font-size: 13px; }
+svg[class*="c2-"] .lbl.big { font-size: 17px; }

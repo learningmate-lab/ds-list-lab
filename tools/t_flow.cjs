@@ -162,7 +162,8 @@ function check(name, ok, info) { results.push([ok ? 'PASS' : 'FAIL', name, info 
     await b.waitFor('DSL.app.Runner.state === "ready"', 60000);
     const ex = await b.ev(`JSON.parse(localStorage.getItem('dsl.exam'))`);
     const lv = await b.ev(`JSON.parse(localStorage.getItem('dsl.exam')).pids.map(id => DSL.DATA.problems.find(p => p.id === id).level + ':' + DSL.DATA.problems.find(p => p.id === id).unit)`);
-    check('M exam picked 4 problems with Lv mix 0,1,1,2', ex.pids.length === 4 && lv.map(x => x[0]).join('') === '0112', lv.join(' '));
+    const us = lv.map(x => x.split(':')[1]);
+    check('M exam picked 4 problems: 2 lab + 1 linked/stack/array + 1 recursion/perf/python', ex.pids.length === 4 && us[0] === 'lab' && us[1] === 'lab' && ['linked', 'stack', 'array'].includes(us[2]) && ['recursion', 'perf', 'python'].includes(us[3]) && ex.pids[0] !== ex.pids[1], lv.join(' '));
     const tm = await b.ev(`document.querySelector('#timer').textContent`);
     check('M timer running', /남은 시간 01:(29|30):\d\d/.test(tm), tm);
     await b.shot(path.join(OUT, 'exam.png'));
@@ -189,8 +190,10 @@ function check(name, ok, info) { results.push([ok ? 'PASS' : 'FAIL', name, info 
 
     // 개념 그림 · 모바일
     await b.goto(URL + '#/learn');
-    await b.ev(`document.querySelector('[data-l=insbad]').click()`); await sleep(200);
-    await b.ev(`document.querySelector('#next').click()`); await sleep(200);
+    check('learn home has 6 chapter cards', await b.ev(`document.querySelectorAll('.cvc').length === 6`));
+    await b.goto(URL + '#/learn/ch5');
+    await sleep(500);
+    check('learn ch5 renders players', await b.ev(`CV.players.length >= 10 && !document.querySelector('.cvv-miss')`));
     await b.shot(path.join(OUT, 'learn.png'));
     await b.size(390, 844, true);
     await b.goto(URL + '#/');

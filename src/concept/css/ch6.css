@@ -1,0 +1,43 @@
+/* Ch.6 스택 그림 */
+.c6-svg .c6-box { fill: none; stroke: #8fa3ab; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.c6-top .c6-topr { fill: #d81247; }
+.c6-top .c6-topt { fill: #fff; font: 700 12.5px var(--mono); }
+.c6-top .c6-topa { stroke: #d81247; stroke-width: 2; fill: none; }
+.c6-top.empty .c6-topr { fill: #a3aaae; }
+.c6-top.empty .c6-topa { stroke: #a3aaae; }
+.c6-svg .c6-log { font: 600 14px var(--mono); fill: #56595c; }
+.c6-svg .c6-log.last { fill: #171a1c; font-weight: 800; }
+.c6-svg .c6-log.err { fill: #d81247; }
+.c6-svg .c6-err { fill: #fff4f6; stroke: #d81247; stroke-width: 1.6; }
+.c6-svg .c6-sep { stroke: #e3e8ea; stroke-width: 1.5; stroke-dasharray: 5 4; }
+.c6-svg .c6-nil { fill: #a3aaae; }
+.c6-svg .c6-arc { fill: none; stroke-width: 2.4; }
+.c6-svg .c6-a0 { stroke: #2f9e6f; } .c6-svg .c6-a1 { stroke: #286b82; } .c6-svg .c6-a2 { stroke: #7a4fc9; } .c6-svg .c6-a3 { stroke: #e8890c; }
+.c6-svg .c6-res { font-size: 17px; font-weight: 800; fill: #171a1c; }
+.c6-svg .c6-res.ok { fill: #2f9e6f; } .c6-svg .c6-res.red { fill: #d81247; } .c6-svg .c6-res.pri { fill: #286b82; } .c6-svg .c6-res.org { fill: #c26a00; }
+.c6-svg .c6-calc { fill: #f6f9fa; stroke: #d5dfe3; stroke-width: 1.5; }
+.c6-svg .c6-pv { font: 800 18px var(--mono); fill: #171a1c; }
+.c6-svg .c6-sm { font-size: 14px; }
+.c6-svg .c6-fr rect { fill: #fff; stroke: #9fb6bf; stroke-width: 1.8; }
+.c6-svg .c6-fr.top rect { fill: #fff6e8; stroke: #e8890c; stroke-width: 2.6; }
+.c6-svg .c6-fn { font: 800 15px var(--mono); fill: #171a1c; }
+.c6-svg .c6-fd { font-size: 12.5px; fill: #56595c; }
+.c6-svg .c6-mc rect, .c6-svg rect.c6-mc, .c6-svg rect.c6-lg { fill: #fff; stroke: #c9d3d7; stroke-width: 1.2; }
+.c6-maze .c6-mc rect { cursor: pointer; }
+.c6-svg .c6-mc.wall rect, .c6-svg rect.c6-lg.wall { fill: #3d4a52; stroke: #3d4a52; }
+.c6-svg .c6-mc.vis rect { fill: #fff6e8; }
+.c6-svg .c6-mc.ins rect, .c6-svg rect.c6-lg.ins { fill: #ffe2b8; stroke: #e8890c; }
+.c6-svg .c6-mc.done rect, .c6-svg rect.c6-lg.done { fill: #dff2e8; stroke: #8fcfae; }
+.c6-svg .c6-mc.cur rect, .c6-svg rect.c6-mc.cur { fill: #286b82; stroke: #286b82; }
+.c6-svg .c6-mc.dead rect { fill: #d81247; stroke: #d81247; }
+.c6-svg .c6-mc.cur .c6-ms, .c6-svg .c6-mc.dead .c6-ms { fill: #fff; }
+.c6-svg .c6-ms { font-weight: 800; font-size: 17px; fill: #286b82; pointer-events: none; }
+.c6-svg .c6-co { font: 700 13.5px var(--mono); fill: #171a1c; }
+.c6-link { display: block; margin-top: 10px; padding: 10px 14px; border: 1px dashed #c9d3d7; border-radius: 10px; color: var(--pri); text-decoration: none; font-size: 14px; background: #f6f9fa; }
+.c6-link:hover { border-color: var(--pri); background: var(--pri-soft); }
+.c6-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; margin-top: 8px; font-size: 13px; color: var(--mut); }
+.c6-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.c6-legend b { color: var(--pri); font-size: 15px; } .c6-legend b.ok { color: var(--ok); }
+.c6-legend i { width: 13px; height: 13px; border-radius: 3px; display: inline-block; border: 1px solid #c9d3d7; }
+.c6-legend i.cur { background: #286b82; border-color: #286b82; } .c6-legend i.ins { background: #ffe2b8; border-color: #e8890c; }
+.c6-legend i.done { background: #dff2e8; border-color: #8fcfae; } .c6-legend i.wall { background: #3d4a52; border-color: #3d4a52; }

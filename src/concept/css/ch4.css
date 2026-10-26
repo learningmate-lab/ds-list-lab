@@ -1,0 +1,79 @@
+/* Ch.4 파이썬 기초 그림 */
+/* 메모리 그림: 프레임(이름표) · 객체 */
+.c4-fr { fill: #f3f6f7; stroke: #b9c6cb; stroke-width: 1.4; }
+.c4-frh { fill: #e2e9ec; }
+.c4-f.call .c4-fr { fill: #fff8ec; stroke: #e8b36a; }
+.c4-f.call .c4-frh { fill: #fde9c8; }
+.c4-ft { font-size: 12.5px; font-weight: 800; fill: #3d4245; }
+.c4-ob { fill: #fff; stroke: #559cb5; stroke-width: 1.8; }
+.c4-obh { fill: #e5f1f6; }
+.c4-ot { font-size: 12.5px; font-weight: 800; fill: #1d5c72; }
+.c4-o.nw .c4-ob, .c4-o.nw .c4-prim { stroke: #e8890c; stroke-width: 2.4; }
+.c4-o.nw .c4-obh { fill: #fff1dc; }
+.c4-an { font: 700 13px var(--mono); fill: #171a1c; }
+.c4-vb { fill: #fff; stroke: #cdd6da; stroke-width: 1.2; }
+.c4-vb.nw { stroke: #e8890c; stroke-width: 2; fill: #fff6e8; }
+.c4-vb.hl { stroke: #d81247; stroke-width: 2.2; fill: #fff1f4; }
+.c4-v { font: 700 14px var(--mono); }
+.c4-num { fill: #1d4f61; } .c4-str { fill: #23855c; } .c4-none { fill: #8a9095; font-weight: 600; } .c4-txt { fill: #7a4fc9; font-size: 12.5px; }
+.c4-dot { fill: #171a1c; }
+.c4-prim { fill: #eef6fb; stroke: #559cb5; stroke-width: 1.8; }
+.c4-cell { fill: #fff; stroke: #559cb5; stroke-width: 1.6; }
+.c4-cell.hl { fill: #fff1f4; stroke: #d81247; stroke-width: 2.4; }
+.c4-cell.nw { fill: #fff1dc; stroke: #e8890c; stroke-width: 2.4; }
+.c4-ix { font: 600 11.5px var(--mono); fill: #8a9095; }
+.c4-ty { font: 700 11.5px var(--mono); fill: #559cb5; }
+.c4-ar { fill: none; stroke: #171a1c; stroke-width: 1.8; }
+.c4-ar.new { stroke: #e8890c; stroke-width: 2.4; }
+.c4-ar.bad { stroke: #d81247; stroke-width: 2.4; }
+.c4-con { fill: #1e2b3a; }
+.c4-cont { font-size: 10.5px; font-weight: 700; fill: #98a8b9; }
+.c4-conl { font: 600 13px var(--mono); fill: #fff; }
+/* 슬라이싱 */
+.c4-sc rect { fill: #fff; stroke: #9fb6bf; stroke-width: 1.5; }
+.c4-sc.dim { opacity: .4; }
+.c4-sc.pk rect { fill: #fff6e8; stroke: #e8890c; }
+.c4-sc.cur rect { fill: #ffe7c2; stroke: #e8890c; stroke-width: 2.6; }
+.c4-sc.res rect { fill: #eef9f3; stroke: #23855c; stroke-width: 2; }
+.c4-scv { font: 700 16px var(--mono); fill: #171a1c; }
+.c4-ix.p { fill: #1d5c72; font-weight: 700; } .c4-ix.n { fill: #b0335a; font-weight: 700; }
+.c4-mk.st { fill: #23855c; }
+.c4-mkt { font: 700 11.5px var(--mono); }
+.c4-mkt.st { fill: #23855c; } .c4-mkt.sp { fill: #d81247; }
+.c4-stop { stroke: #d81247; stroke-width: 3; stroke-dasharray: 5 3; }
+/* 리스트 메서드 비용 */
+.c4-slot { fill: #f6f8f9; stroke: #cdd6da; stroke-width: 1.2; }
+.c4-cv rect { fill: #286b82; }
+.c4-cvt { font: 800 17px var(--ui); fill: #fff; }
+.c4-cv.mv rect { fill: #e8890c; }
+.c4-cv.new rect { fill: #23855c; }
+.c4-cv.cmp rect { fill: #559cb5; }
+.c4-cv.ok rect { fill: #23855c; }
+.c4-cv.dim { opacity: .45; }
+.c4-cv.out { opacity: .55; }
+.c4-cv.out rect { fill: #a3aaae; }
+/* 딕셔너리 · 집합 */
+.c4-wd rect { fill: #fff; stroke: #cdd6da; stroke-width: 1.4; }
+.c4-wd.cur rect { fill: #fff1dc; stroke: #e8890c; stroke-width: 2.4; }
+.c4-wd.done { opacity: .55; }
+.c4-wd.nw rect { fill: #fff1dc; stroke: #e8890c; stroke-width: 2.2; }
+.c4-wdt { font: 700 13.5px var(--mono); fill: #23855c; }
+.c4-dict { fill: #f6faf8; stroke: #23855c; stroke-width: 1.8; }
+.c4-set { fill: #f6faf8; stroke: #23855c; stroke-width: 1.8; stroke-dasharray: 6 4; }
+.c4-dtt { font: 800 13px var(--mono); fill: #23855c; }
+.c4-row .kk { fill: #fff; stroke: #23855c; stroke-width: 1.4; }
+.c4-row .vv { fill: #fff; stroke: #9fb6bf; stroke-width: 1.4; }
+.c4-row.nw .kk, .c4-row.nw .vv { fill: #fff1dc; stroke: #e8890c; stroke-width: 2.2; }
+.c4-row.hl .vv { fill: #fff1dc; stroke: #e8890c; stroke-width: 2.4; }
+.c4-kt { font: 700 13.5px var(--mono); fill: #23855c; }
+.c4-vt { font: 800 15px var(--mono); fill: #171a1c; }
+.c4-kar { stroke: #171a1c; stroke-width: 1.6; fill: none; }
+/* 입출력 */
+.c4-io rect { fill: #fff; stroke: #9fb6bf; stroke-width: 1.4; }
+.c4-io.s rect { fill: #f2faf5; stroke: #23855c; }
+.c4-io.s .c4-iot { fill: #23855c; }
+.c4-io.n rect { fill: #eef6fb; stroke: #286b82; }
+.c4-io.bad rect { fill: #fff1f4; stroke: #d81247; stroke-width: 2.2; }
+.c4-iot { font: 700 14px var(--mono); fill: #1d4f61; }
+/* 그림 */
+.c4-art .tag { fill: #23855c; }

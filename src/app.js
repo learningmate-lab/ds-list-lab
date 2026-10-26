@@ -141,7 +141,7 @@
     var h = location.hash.replace(/^#\/?/, '').split('?')[0].split('/');
     if (h[0] === 'p' && BY[h[1]]) return openPractice(BY[h[1]]);
     if (h[0] === 'exam') return h[1] === 'result' ? showExamResult() : openExam();
-    if (h[0] === 'learn') return showLearn();
+    if (h[0] === 'learn') return showLearn(h);
     showHome();
   }
 
@@ -193,7 +193,7 @@
     var exLive = ex && !ex.done && Date.now() < ex.end;
     el.innerHTML =
       '<header class="topbar"><div class="tb-in"><a class="brand" href="#/">' + (IMG.logo ? '<img src="' + IMG.logo + '" alt="">' : '') + '<b>러닝메이트</b><span class="sep">·</span><span class="t">자료구조 코딩테스트 연습실</span></a>' +
-      '<div class="tb-r">' + pyStatusHTML() + '<a class="btn sm quiet" href="#/learn">개념 그림</a></div></div></header>' +
+      '<div class="tb-r">' + pyStatusHTML() + '<a class="btn sm" href="#/learn">📘 개념 정리</a></div></div></header>' +
       '<main class="home">' +
       '<section class="hero"><div>' +
       '<p class="eyebrow">프로그래머스 시험 화면 그대로 · Python</p>' +
@@ -204,12 +204,13 @@
       '</div>' + (IMG.mascot ? '<img class="mascot" src="' + IMG.mascot + '" alt="러닝메이트 마스코트">' : '') + '</section>' +
       '<section class="cards3">' +
       '<div class="card"><h3>시험 범위 <small>중간고사</small></h3><ul class="scope">' +
-      '<li><b>Ch.1</b>강의 소개 · 자료구조 소개<em>개념</em></li>' +
-      '<li><b>Ch.2</b>재귀(자기 호출)와 귀납적 사고<em>재귀 ' + uc('recursion') + '문제</em></li>' +
-      '<li><b>Ch.3</b>알고리즘의 성능<em>효율성 ' + uc('perf') + '문제</em></li>' +
-      '<li><b>Ch.4</b>파이썬 기초<em>' + uc('python') + '문제</em></li>' +
-      '<li><b>Ch.5</b>리스트 I · II (배열 구조 · 연결 리스트)<em>' + (uc('array') + uc('linked')) + '문제</em></li>' +
-      '<li><b>Ch.6</b>스택<em>' + uc('stack') + '문제</em></li></ul></div>' +
+      '<li class="lab"><a href="#/learn/ch5"><b>실습</b>실습 코드 직접 구현 (연결 리스트 · 스택)<em>' + uc('lab') + '문제</em></a></li>' +
+      '<li><a href="#/learn/ch1"><b>Ch.1</b>강의 소개 · 자료구조 소개<em>개념</em></a></li>' +
+      '<li><a href="#/learn/ch2"><b>Ch.2</b>재귀(자기 호출)와 귀납적 사고<em>재귀 ' + uc('recursion') + '문제</em></a></li>' +
+      '<li><a href="#/learn/ch3"><b>Ch.3</b>알고리즘의 성능<em>효율성 ' + uc('perf') + '문제</em></a></li>' +
+      '<li><a href="#/learn/ch4"><b>Ch.4</b>파이썬 기초<em>' + uc('python') + '문제</em></a></li>' +
+      '<li><a href="#/learn/ch5"><b>Ch.5</b>리스트 I · II (배열 구조 · 연결 리스트)<em>' + (uc('array') + uc('linked')) + '문제</em></a></li>' +
+      '<li><a href="#/learn/ch6"><b>Ch.6</b>스택<em>' + uc('stack') + '문제</em></a></li></ul></div>' +
       '<div class="card"><h3>풀이 형식 <small>시험 형식이 정해지면 맞춰서</small></h3><div class="seg" id="fmtseg"><button data-fmt="func">함수형</button><button data-fmt="io">입출력형</button></div><div class="fmt-ex" id="fmtex"></div></div>' +
       '<div class="card"><h3>내 진도 <small>이 브라우저에 저장</small></h3><div class="big-num">' + solved + '<small> / ' + PROBS.length + ' 문제 해결</small></div><div class="lvbars" style="margin-top:10px">' +
       lvls.map(function (x) { return '<div class="lvbar"><b class="lv' + x.l + '">Lv. ' + x.l + '</b><div class="prog lv' + x.l + '"><i style="width:' + (x.n ? 100 * x.ok / x.n : 0) + '%"></i></div><span>' + x.ok + ' / ' + x.n + '</span></div>'; }).join('') +
@@ -698,16 +699,24 @@
   }
 
   // ------------------------------------------------------------------ 모의시험
-  var MIX = { 3: [0, 1, 2], 4: [0, 1, 1, 2], 5: [0, 1, 1, 2, 2] };
+  // 출제 칸: 실습 코드 구현을 중심으로 (실습 때 만든 자료구조를 직접 짜는 문제) + 연결 리스트/스택 응용 + 재귀/성능
+  var G_LAB = ['lab'], G_APP = ['linked', 'stack', 'array'], G_RP = ['recursion', 'perf', 'python'];
+  var SLOTS = {
+    3: [[G_LAB, [0, 1]], [G_LAB, [1, 2]], [G_APP, [1, 2]]],
+    4: [[G_LAB, [0, 1]], [G_LAB, [1, 2]], [G_APP, [1, 2]], [G_RP, [0, 1, 2]]],
+    5: [[G_LAB, [0, 1]], [G_LAB, [1, 2]], [G_LAB, [2, 1]], [G_APP, [1, 2]], [G_RP, [0, 1, 2]]],
+  };
   function pickExam(n, units) {
     var pool = PROBS.filter(function (p) { return units.indexOf(p.unit) >= 0; });
-    var used = {}, usedU = {}, out = [];
-    MIX[n].forEach(function (lv) {
-      var c = shuffle(pool.filter(function (p) { return p.level === lv && !used[p.id]; }));
-      if (!c.length) c = shuffle(pool.filter(function (p) { return !used[p.id]; }));
-      var pick = c.filter(function (p) { return !usedU[p.unit]; })[0] || c[0];
+    var used = {}, usedSub = {}, out = [];
+    SLOTS[n].forEach(function (slot) {
+      var free = pool.filter(function (p) { return !used[p.id]; });
+      var c = shuffle(free.filter(function (p) { return slot[0].indexOf(p.unit) >= 0 && slot[1].indexOf(p.level) >= 0; }));
+      if (!c.length) c = shuffle(free.filter(function (p) { return slot[0].indexOf(p.unit) >= 0; }));
+      if (!c.length) c = shuffle(free);
+      var pick = c.filter(function (p) { return !usedSub[p.unit + '/' + (p.sub || '')]; })[0] || c[0];
       if (!pick) return;
-      used[pick.id] = 1; usedU[pick.unit] = 1; out.push(pick.id);
+      used[pick.id] = 1; usedSub[pick.unit + '/' + (pick.sub || '')] = 1; out.push(pick.id);
     });
     return out;
   }
@@ -716,7 +725,7 @@
     function grp(id, list, cur) { return '<div class="opts-grid" id="' + id + '">' + list.map(function (x) { return '<button class="opt-btn' + (x[0] === cur ? ' on' : '') + '" data-v="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>'; }
     modal({
       title: '모의시험 설정', cls: 'wide',
-      body: '<p class="mnote" style="margin-top:0">실제 시험처럼 난이도를 섞어서 출제해요 (예: 4문제 = Lv.0 1 + Lv.1 2 + Lv.2 1, 가능하면 단원이 겹치지 않게). 문제마다 정확성(+효율성) 100점, 문제 수로 나눠 100점 만점으로 환산해요.</p>' +
+      body: '<p class="mnote" style="margin-top:0">시험은 <b>실습 때 만든 자료구조를 직접 구현</b>하는 문제가 중심일 가능성이 높아서 그렇게 섞어서 출제해요. 4문제 = <b>실습 코드 구현 2</b> + 연결 리스트·스택 응용 1 + 재귀·성능 1 (3문제 = 실습 2 + 응용 1, 5문제 = 실습 3 + 응용 1 + 재귀·성능 1). 문제마다 정확성(+효율성) 100점, 문제 수로 나눠 100점 만점으로 환산해요.</p>' +
         '<div class="form-row"><label>문제 수</label>' + grp('o-n', [[3, '3문제'], [4, '4문제'], [5, '5문제']], o.n) + '</div>' +
         '<div class="form-row"><label>시험 시간</label>' + grp('o-min', [[60, '60분'], [90, '90분'], [120, '120분']], o.min) + '</div>' +
         '<div class="form-row"><label>풀이 형식<small>시험 중에는 바꿀 수 없어요</small></label>' + grp('o-fmt', [['func', '함수형'], ['io', '입출력형']], o.fmt) + '</div>' +
@@ -798,99 +807,16 @@
     });
   }
 
-  // ------------------------------------------------------------------ 개념 그림 (연결 리스트 포인터 바꾸는 순서)
-  var LESSONS = [
-    {
-      id: 'ins', title: '중간에 노드 넣기', sub: '올바른 순서', code: ['node = Node(x)', 'node.next = prev.next   # ① 새 노드가 뒤를 먼저 잡고', 'prev.next = node        # ② 앞 노드가 새 노드를 가리킴'],
-      steps: [
-        { line: -1, cap: '연결 리스트 10 → 20 → 30에서 20 다음에 25를 넣으려고 해요. prev는 20 노드를 가리켜요.', nodes: [[10, 0], [20, 1], [30, 2]], next: [[0, 1], [1, 2]], vars: [['prev', 1]] },
-        { line: 0, cap: 'Node(25)를 만들었어요. 아직 아무 노드와도 연결되지 않았어요.', nodes: [[10, 0], [20, 1], [30, 2], [25, 1.5, 'new']], next: [[0, 1], [1, 2]], vars: [['prev', 1], ['node', 3]] },
-        { line: 1, cap: '① node.next = prev.next : 새 노드가 30을 먼저 가리켜요. 이제 30을 잃어버릴 걱정이 없어요.', nodes: [[10, 0], [20, 1], [30, 2], [25, 1.5, 'new']], next: [[0, 1], [1, 2], [3, 2, 'new']], vars: [['prev', 1], ['node', 3]] },
-        { line: 2, cap: '② prev.next = node : 20이 새 노드를 가리켜요. 10 → 20 → 25 → 30 완성!', nodes: [[10, 0], [20, 1], [30, 2], [25, 1.5, 'new']], next: [[0, 1], [1, 3, 'new'], [3, 2, 'new']], vars: [['prev', 1], ['node', 3]] },
-      ],
-    },
-    {
-      id: 'insbad', bad: true, title: '중간에 노드 넣기', sub: '순서를 바꾸면?', code: ['node = Node(x)', 'prev.next = node        # ② 를 먼저 하면…', 'node.next = prev.next   # prev.next 는 이미 node!'],
-      steps: [
-        { line: 0, cap: '같은 상황에서 두 줄의 순서를 바꿔 볼게요.', nodes: [[10, 0], [20, 1], [30, 2], [25, 1.5, 'new']], next: [[0, 1], [1, 2]], vars: [['prev', 1], ['node', 3]] },
-        { line: 1, cap: 'prev.next = node 를 먼저 하면 20 → 30 연결이 끊어져요. 30을 가리키는 변수가 하나도 없어서 30 이후 노드를 모두 잃어버려요!', bad: true, nodes: [[10, 0], [20, 1], [30, 2, 'del'], [25, 1.5, 'new']], next: [[0, 1], [1, 3, 'new']], lost: [[1, 2]], vars: [['prev', 1], ['node', 3]] },
-        { line: 2, cap: 'node.next = prev.next 는 node.next = node 가 되어 새 노드가 자기 자신을 가리켜요. next를 따라가면 끝나지 않는 순환이 생겨요 (채점에서 "연결 리스트가 끝나지 않습니다").', bad: true, nodes: [[10, 0], [20, 1], [30, 2, 'del'], [25, 1.5, 'new']], next: [[0, 1], [1, 3, 'new'], [3, 3, 'new']], lost: [[1, 2]], vars: [['prev', 1], ['node', 3]] },
-      ],
-    },
-    {
-      id: 'del', title: '중간 노드 지우기', sub: '앞 노드가 건너뛰기', code: ['prev.next = prev.next.next   # 지울 노드를 건너뜀'],
-      steps: [
-        { line: -1, cap: '10 → 20 → 30 → 40에서 30을 지우려면 그 앞 노드(20)를 prev로 잡아야 해요. 단순 연결 리스트는 뒤로 갈 수 없기 때문이에요.', nodes: [[10, 0], [20, 1], [30, 2], [40, 3]], next: [[0, 1], [1, 2], [2, 3]], vars: [['prev', 1]] },
-        { line: 0, cap: 'prev.next = prev.next.next : 20이 30을 건너뛰고 40을 가리켜요. 30은 리스트에서 빠졌어요.', nodes: [[10, 0], [20, 1], [30, 2, 'del'], [40, 3]], next: [[0, 1], [1, 3, 'new'], [2, 3]], vars: [['prev', 1]] },
-      ],
-    },
-    {
-      id: 'front', title: '맨 앞에 넣기', sub: 'head가 바뀜', code: ['node = Node(x)', 'node.next = head   # ① 지금의 첫 노드를 가리키고', 'head = node        # ② head를 새 노드로'],
-      steps: [
-        { line: -1, cap: 'head가 10을 가리키는 리스트 10 → 20의 맨 앞에 5를 넣어요.', nodes: [[10, 1], [20, 2]], next: [[0, 1]], vars: [['head', 0]] },
-        { line: 0, cap: 'Node(5)를 만들어요.', nodes: [[10, 1], [20, 2], [5, 0, 'new']], next: [[0, 1]], vars: [['head', 0], ['node', 2]] },
-        { line: 1, cap: '① node.next = head : 새 노드가 10을 가리켜요.', nodes: [[10, 1], [20, 2], [5, 0, 'new']], next: [[0, 1], [2, 0, 'new']], vars: [['head', 0], ['node', 2]] },
-        { line: 2, cap: '② head = node : 이제 head가 5를 가리켜요. 이 줄을 빼먹으면 5는 리스트에 들어가지 않아요.', nodes: [[10, 1], [20, 2], [5, 0, 'new']], next: [[0, 1], [2, 0, 'new']], vars: [['head', 2], ['node', 2]] },
-      ],
-    },
-    {
-      id: 'dins', title: '이중 연결 리스트 넣기', sub: 'next · prev 4곳', code: ['node.prev = prev          # ①', 'node.next = prev.next     # ②', 'prev.next.prev = node     # ③ 뒤 노드의 prev', 'prev.next = node          # ④ 앞 노드의 next'],
-      steps: [
-        { line: -1, cap: '이중 연결 리스트 10 ⇄ 30 사이에 20을 넣어요. 위쪽 화살표는 next, 아래쪽은 prev예요.', nodes: [[10, 0], [30, 2], [20, 1, 'new']], next: [[0, 1]], prev: [[1, 0]], vars: [['prev', 0], ['node', 2]] },
-        { line: 0, cap: '① node.prev = prev', nodes: [[10, 0], [30, 2], [20, 1, 'new']], next: [[0, 1]], prev: [[1, 0], [2, 0, 'new']], vars: [['prev', 0], ['node', 2]] },
-        { line: 1, cap: '② node.next = prev.next : 새 노드 → 30', nodes: [[10, 0], [30, 2], [20, 1, 'new']], next: [[0, 1], [2, 1, 'new']], prev: [[1, 0], [2, 0, 'new']], vars: [['prev', 0], ['node', 2]] },
-        { line: 2, cap: '③ prev.next.prev = node : 30의 prev가 새 노드를 가리켜요. (④보다 먼저! ④를 먼저 하면 prev.next가 새 노드가 되어 30에 닿을 수 없어요)', nodes: [[10, 0], [30, 2], [20, 1, 'new']], next: [[0, 1], [2, 1, 'new']], prev: [[1, 2, 'new'], [2, 0, 'new']], vars: [['prev', 0], ['node', 2]] },
-        { line: 3, cap: '④ prev.next = node : 10 ⇄ 20 ⇄ 30 완성. next 2개와 prev 2개, 모두 4곳을 고쳤어요.', nodes: [[10, 0], [30, 2], [20, 1, 'new']], next: [[0, 2, 'new'], [2, 1, 'new']], prev: [[1, 2, 'new'], [2, 0, 'new']], vars: [['prev', 0], ['node', 2]] },
-      ],
-    },
-  ];
-  function lessonSVG(st) {
-    var W = 760, H = 230, bw = 92, bh = 46, gap = 170, x0 = 40, y0 = 100;
-    var pos = st.nodes.map(function (n) { var newRow = n[2] === 'new' && n[1] % 1 !== 0; return { x: x0 + n[1] * gap, y: newRow ? y0 + 70 : y0, v: n[0], cls: n[2] || '' }; });
-    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(st.cap) + '"><defs>' +
-      ['a', 'n', 'p', 'l'].map(function (k, i) { return '<marker id="m' + k + '" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="' + ['#286b82', '#f08c00', '#559cb5', '#d81247'][i] + '"/></marker>'; }).join('') + '</defs>';
-    function arrow(a, b, cls, isPrev) {
-      var A = pos[a], B = pos[b], m = cls === 'new' ? 'n' : cls === 'lost' ? 'l' : isPrev ? 'p' : 'a';
-      if (a === b) { var cx = A.x + bw - 10, cy = A.y; return '<path class="svg-arrow ' + cls + '" d="M' + cx + ' ' + (cy) + ' C ' + (cx + 50) + ' ' + (cy - 60) + ', ' + (A.x + 20) + ' ' + (cy - 60) + ', ' + (A.x + 30) + ' ' + (cy - 2) + '" marker-end="url(#m' + m + ')"/>'; }
-      if (isPrev) { var sx = A.x + 14, sy = A.y + bh - 8, ex = B.x + bw - 6, ey = B.y + bh - 8; return '<path class="svg-arrow prev ' + cls + '" d="M' + sx + ' ' + sy + ' C ' + sx + ' ' + (sy + 40) + ', ' + ex + ' ' + (ey + 40) + ', ' + ex + ' ' + (ey + 4) + '" marker-end="url(#m' + m + ')"/>'; }
-      var x1 = A.x + bw - 14, y1 = A.y + bh / 2, x2 = B.x, y2 = B.y + bh / 2;
-      if (x2 < x1) { x2 = B.x + bw / 2; y2 = B.y + (B.y > A.y ? 0 : bh); }
-      return '<path class="svg-arrow ' + cls + '" d="M' + x1 + ' ' + y1 + ' C ' + (x1 + 40) + ' ' + y1 + ', ' + (x2 - 40) + ' ' + y2 + ', ' + (x2 - 2) + ' ' + y2 + '" marker-end="url(#m' + m + ')"/>';
-    }
-    (st.lost || []).forEach(function (e) { s += arrow(e[0], e[1], 'lost'); var A = pos[e[0]], B = pos[e[1]]; s += '<text class="svg-lost" x="' + ((A.x + B.x + bw) / 2 - 10) + '" y="' + (A.y - 8) + '">✕ 끊김</text>'; });
-    (st.next || []).forEach(function (e) { s += arrow(e[0], e[1], e[2] || ''); });
-    (st.prev || []).forEach(function (e) { s += arrow(e[0], e[1], e[2] || '', true); });
-    pos.forEach(function (p) {
-      s += '<g class="svg-node ' + p.cls + '"><rect x="' + p.x + '" y="' + p.y + '" width="' + bw + '" height="' + bh + '" rx="6"/><rect class="ptr" x="' + (p.x + bw - 28) + '" y="' + (p.y + 2) + '" width="26" height="' + (bh - 4) + '" rx="4"/><line x1="' + (p.x + bw - 28) + '" y1="' + p.y + '" x2="' + (p.x + bw - 28) + '" y2="' + (p.y + bh) + '" stroke="#286b82" stroke-width="1.5"/><text class="val" x="' + (p.x + (bw - 28) / 2) + '" y="' + (p.y + bh / 2 + 6) + '" text-anchor="middle">' + p.v + '</text></g>';
+  // ------------------------------------------------------------------ 개념 정리 (src/concept/)
+  function showLearn(parts) {
+    var el = mount('view home-view cv-view');
+    if (!window.CV) { el.innerHTML = '<p style="padding:40px">개념 정리를 불러오지 못했어요.</p>'; return; }
+    keyHandler = function (e) { if (!modalEl) window.CV.key(e); };
+    window.CV.show(el, parts, {
+      PROBS: PROBS, UNIT: UNIT, UNITS: UNITS, IMG: IMG, LS: LS, track: track, status: status, go: go,
+      onCleanup: function (f) { cleanup.push(f); },
+      openUnit: function (u) { HOME.unit = u; HOME.tab = 'unit'; HOME.lv = [0, 1, 2]; HOME.st = 'all'; HOME.q = ''; saveHome(); go('#/'); setTimeout(function () { var l = document.getElementById('plist'); if (l) l.scrollIntoView({ block: 'start' }); }, 60); },
     });
-    var tail = pos.filter(function (p, i) { return !(st.next || []).some(function (e) { return e[0] === i; }) && p.cls !== 'del' && p.cls !== 'new'; });
-    tail.forEach(function (p) { s += '<text class="svg-none" x="' + (p.x + bw + 6) + '" y="' + (p.y + bh / 2 + 5) + '">None</text>'; });
-    var stack = {};
-    (st.vars || []).forEach(function (v) { var p = pos[v[1]], k = v[1]; stack[k] = (stack[k] || 0) + 1; s += '<text class="svg-var" x="' + (p.x + 6) + '" y="' + (p.y - 12 - (stack[k] - 1) * 16) + '">' + v[0] + ' ↓</text>'; });
-    return s + '</svg>';
-  }
-  function showLearn() {
-    var el = mount('view home-view');
-    document.title = '개념 그림 - 자료구조 코딩테스트 연습실';
-    var cur = LESSONS[0], step = 0;
-    el.innerHTML = '<header class="topbar"><div class="tb-in"><a class="brand" href="#/">' + (IMG.logo ? '<img src="' + IMG.logo + '" alt="">' : '') + '<b>러닝메이트</b><span class="sep">·</span><span class="t">개념 그림 · 연결 리스트</span></a><div class="tb-r"><a class="btn sm" href="#/">문제 목록</a></div></div></header>' +
-      '<main class="learn"><h2 style="margin:0">포인터를 바꾸는 순서</h2><p style="margin:4px 0 0;color:var(--mut)">연결 리스트 문제의 오답은 대부분 <b>next를 바꾸는 순서</b>에서 나와요. 한 줄씩 넘기며 화살표가 어떻게 바뀌는지 보세요.</p>' +
-      '<div class="lr-grid"><nav class="lr-menu">' + LESSONS.map(function (l) { return '<button data-l="' + l.id + '"' + (l.bad ? ' class="bad"' : '') + '>' + esc(l.title) + '<small>' + esc(l.sub) + '</small></button>'; }).join('') + '</nav>' +
-      '<section class="lr-stage"><div id="svg"></div><p class="lr-cap" id="cap"></p><div class="lr-code" id="code"></div><div class="lr-ctl"><button class="btn sm" id="prev">← 이전</button><button class="btn sm pri" id="next">다음 →</button><span class="stepn" id="stepn"></span></div></section></div></main>';
-    function paint() {
-      var st = cur.steps[step];
-      $('#svg', el).innerHTML = lessonSVG(st);
-      var cap = $('#cap', el); cap.textContent = st.cap; cap.className = 'lr-cap' + (st.bad ? ' bad' : '');
-      $('#code', el).innerHTML = cur.code.map(function (c, i) { return '<div' + (i === st.line ? ' class="on"' : '') + '>' + esc(c) + '</div>'; }).join('');
-      $('#stepn', el).textContent = (step + 1) + ' / ' + cur.steps.length;
-      $('#prev', el).disabled = step === 0; $('#next', el).disabled = step === cur.steps.length - 1;
-      $$('.lr-menu button', el).forEach(function (b) { b.classList.toggle('on', b.dataset.l === cur.id); });
-    }
-    $$('.lr-menu button', el).forEach(function (b) { b.onclick = function () { cur = LESSONS.filter(function (l) { return l.id === b.dataset.l; })[0]; step = 0; paint(); }; });
-    $('#prev', el).onclick = function () { if (step > 0) { step--; paint(); } };
-    $('#next', el).onclick = function () { if (step < cur.steps.length - 1) { step++; paint(); } };
-    keyHandler = function (e) { if (e.key === 'ArrowRight') $('#next', el).click(); if (e.key === 'ArrowLeft') $('#prev', el).click(); };
-    paint();
   }
 
   // ------------------------------------------------------------------ 시작

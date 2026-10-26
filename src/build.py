@@ -23,7 +23,8 @@ NODEY = ('linked', 'dlinked', 'clinked')
 TYPE_LABEL = {'int': 'int', 'str': 'str', 'bool': 'bool', 'list': 'list[int]', 'linked': 'Node (head)', 'dlinked': 'Node (head, 이중)',
               'clinked': 'Node (원형)', 'strlist': 'list[str]', 'pairs': 'list[list[int]]', 'lists': 'list[list]', 'ops': 'list'}
 DEFAULT = {'int': '0', 'str': "''", 'bool': 'False', 'list': '[]', 'pairs': '[]', 'lists': '[]', 'strlist': '[]', 'linked': 'None', 'dlinked': 'None'}
-OBJ = {'ArrayList': 'al', 'LinkedList': 'll', 'CircularLinkedList': 'cl', 'DoublyLinkedList': 'dl', 'Stack': 'st', 'LinkedStack': 'st'}
+OBJ = {'ArrayList': 'al', 'LinkedList': 'll', 'CircularLinkedList': 'cl', 'DoublyLinkedList': 'dl', 'Stack': 'st', 'LinkedStack': 'st',
+       'LinkedListBasic': 'lst', 'CircularDoublyLinkedList': 'cdl', 'ListStack': 'st'}
 ORD = ['첫째', '둘째', '셋째', '넷째', '다섯째', '여섯째', '일곱째']
 EFF_TL = 2000
 EFF_W = 40
@@ -40,7 +41,10 @@ def spec_of(p):
     s = {'kind': p.get('kind', 'func'), 'params': [[n, t] for n, t, _ in p['params']], 'ret': p['ret'][0], 'empty': p.get('empty', 'empty')}
     if s['kind'] == 'class':
         s['cls'] = p['cls']
-        s['queries'] = [m[0] for m in p['methods'] if m[2]]
+        s['queries'] = [m[0] for m in p['methods'] if m[2] and m[2] != 'print']
+        if p.get('capture'):   # 실습 코드 문제: printList 같은 출력 메서드 + 오류 메시지 출력도 채점
+            s['capture'] = True
+            s['prints'] = [m[0] for m in p['methods'] if m[2] == 'print']
     if p.get('rec'):
         s['rec'] = True
     if p.get('eff'):
@@ -63,6 +67,8 @@ def with_prelude(p, body):
 
 
 def tmpl_func(p):
+    if p.get('tmpl'):     # 실습 코드 문제: 실습 코드에서 메서드 본문만 비운 템플릿
+        return with_prelude(p, p['tmpl'])
     if p.get('kind') == 'class':
         return with_prelude(p, class_skeleton(p))
     names = ', '.join(n for n, _, _ in p['params'])
@@ -74,7 +80,7 @@ def read_lines(p):
     if p.get('kind') == 'class':
         o = OBJ.get(p['cls'], 'obj')
         return ['q = int(input())', '%s = %s()' % (o, p['cls']), 'for _ in range(q):',
-                "    cmd = input().split()      # 예) ['%s', '3']" % p['methods'][0][0]]
+                "    cmd = input().split()      # 예) %s" % str([p['methods'][0][0]] + [str(3 + k) for k in range(len(p['methods'][0][1]))])]
     used = {io_name(n, t) for n, t, _ in p['params']}
     pool = [c for c in ['n', 'm', 'p', 'r', 'cnt'] if c not in used]
     L = []
@@ -100,7 +106,9 @@ def read_lines(p):
 
 def tmpl_io(p):
     if p.get('kind') == 'class':
-        body = class_skeleton(p) + '\n\n' + '\n'.join(read_lines(p)) + '\n    # 여기에 명령을 처리하고 결과를 출력하는 코드를 작성하세요.\n'
+        body = (p.get('tmpl') or class_skeleton(p)).rstrip() + '\n\n\n' + '\n'.join(read_lines(p)) + '\n    # 여기에 명령을 처리하고 결과를 출력하는 코드를 작성하세요.\n'
+    elif p.get('tmpl'):
+        body = p['tmpl'].rstrip() + '\n\n\n' + '\n'.join(read_lines(p)) + '\n\n# 여기에 코드를 작성하세요.\n'
     else:
         body = '\n'.join(read_lines(p)) + '\n\n# 여기에 코드를 작성하세요.\n'
     return with_prelude(p, body)
@@ -152,8 +160,13 @@ def ref_io(p, sol=None):
         for name, args, ret, _ in p['methods']:
             L.append("    %s cmd[0] == '%s':" % ('if' if first else 'elif', name))
             first = False
-            call = '%s.%s(%s)' % (o, name, ', '.join('int(cmd[%d])' % (i + 1) for i in range(len(args))))
-            if ret == 'list':
+            if args and args[-1].startswith('['):     # 인자를 줄 수도 안 줄 수도 있음: pop() / pop(i)
+                call = '%s.%s(*map(int, cmd[1:]))' % (o, name)
+            else:
+                call = '%s.%s(%s)' % (o, name, ', '.join('int(cmd[%d])' % (i + 1) for i in range(len(args))))
+            if ret == 'print':
+                L.append('        ' + call)
+            elif ret == 'list':
                 L += ['        r = ' + call, "        print(' '.join(map(str, r)) if r else 'empty')"]
             elif ret:
                 L.append('        print(%s)' % call)
@@ -240,11 +253,16 @@ def method_table(p, fmt):
     for name, args, ret, desc in p['methods']:
         if fmt == 'func':
             sig = '<code>%s(%s)</code>' % (name, ', '.join(args))
-            r = {'int': '정수', 'list': '리스트', 'bool': 'True / False', None: '없음'}[ret]
+            if args and args[-1].startswith('['):
+                sig = '<code>%s()</code> 또는 <code>%s(%s)</code>' % (name, name, args[-1].strip('[]'))
+            r = {'int': '정수', 'list': '리스트', 'bool': 'True / False', None: '없음', 'val': '값 또는 <code>None</code>', 'print': '없음 (화면에 출력)'}[ret]
         else:
             sig = '<code>%s</code>' % ' '.join([name] + args)
+            if args and args[-1].startswith('['):
+                sig = '<code>%s</code> 또는 <code>%s %s</code>' % (name, name, args[-1].strip('[]'))
             r = {'int': '돌려주는 값을 한 줄에 출력', 'bool': '<code>True</code> 또는 <code>False</code>를 한 줄에 출력',
-                 'list': '값들을 공백으로 구분해 한 줄에 출력 (비어 있으면 <code>empty</code>)', None: '출력 없음'}[ret]
+                 'list': '값들을 공백으로 구분해 한 줄에 출력 (비어 있으면 <code>empty</code>)', None: '출력 없음' + (' (메서드가 직접 출력하는 내용은 그대로)' if p.get('capture') else ''),
+                 'val': '돌려주는 값을 한 줄에 출력 (<code>None</code>이면 <code>None</code>)', 'print': '메서드가 출력하는 내용 그대로'}[ret]
         rows.append('<tr><td>%s</td><td class="l">%s</td><td>%s</td></tr>' % (sig, inline(desc), r))
     head = '<tr><th>메서드</th><th>설명</th><th>반환값</th></tr>' if fmt == 'func' else '<tr><th>명령</th><th>설명</th><th>출력</th></tr>'
     return '<table class="mt"><thead>' + head + '</thead><tbody>' + ''.join(rows) + '</tbody></table>'
@@ -315,6 +333,9 @@ def statement(p, spec, fmt):
             ex_cmd = html.escape(json.dumps([m0[0]] + [3 + i for i in range(len(m0[1]))]))
             S.append('<p>채점기는 <code>%s</code> 객체를 하나 만든 뒤, <code>commands</code>의 명령을 앞에서부터 하나씩 메서드로 호출합니다. 예를 들어 <code>%s</code>는 <code>obj.%s(%s)</code>를 호출한다는 뜻입니다. 값을 돌려주는 메서드(%s)의 반환값을 순서대로 모은 배열을 result와 비교합니다.</p>'
                      % (p['cls'], ex_cmd, m0[0], ex_args, qs))
+            if p.get('capture'):
+                S.append('<p class="note">출력하는 메서드(%s)는 그 메서드가 출력한 내용을 문자열 하나로 result에 넣습니다 (줄 끝 공백은 무시). 다른 메서드도 무언가를 출력하면(예: 범위를 벗어난 <code>insert</code>의 안내 문구) 그 문자열이 result에 들어갑니다.</p>'
+                         % (', '.join('<code>%s</code>' % m[0] for m in p['methods'] if m[2] == 'print') or '없음'))
             S.append('<p>위 설명대로 동작하도록 <code>%s</code> 클래스의 메서드를 완성해주세요.</p>' % p['cls'])
         else:
             S.append('<p><code>%s</code> 클래스를 완성하고, 명령을 차례로 처리하며 결과를 출력하는 프로그램을 작성해주세요.</p>' % p['cls'])
@@ -402,8 +423,8 @@ def check(pid):
     # 빈 템플릿
     for mode, code in (('func', tf), ('io', ti)):
         assert any(run(spec, mode, code, t, deadline=TEST_DEADLINE)['status'] != 'pass' for t in hidden), (pid, 'stub passes', mode)
-    if spec['kind'] != 'class' or True:
-        r = run(spec, 'func', tf, samples[0])
+    if not p.get('stub_error_ok'):
+        r = run(spec, 'func', tf, samples[0], deadline=TEST_DEADLINE)
         assert r['status'] == 'fail', (pid, 'func stub should fail cleanly (not error)', r)
     # 틀린 답
     nw = ns = 0

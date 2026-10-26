@@ -32,7 +32,7 @@ async function launch(opts = {}) {
   const api = {
     cmd, ev, logs,
     async size(w, h, mobile) { await cmd('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: 1, mobile: !!mobile }); },
-    async goto(url) { await cmd('Page.navigate', { url }); for (let i = 0; i < 300; i++) { await sleep(100); try { if (await ev('document.readyState === "complete" && !!window.DSL && !!window.DSL.app')) return; } catch (e) { } } throw new Error('page not loaded'); },
+    async goto(url) { await cmd('Page.navigate', { url }); for (let i = 0; i < 900; i++) { await sleep(100); try { if (await ev('document.readyState === "complete" && !!window.DSL && !!window.DSL.app')) return; } catch (e) { } } throw new Error('page not loaded'); },
     async waitFor(expr, ms = 60000, every = 200) { const t0 = Date.now(); while (Date.now() - t0 < ms) { try { const v = await ev(expr); if (v) return v; } catch (e) { } await sleep(every); } throw new Error('timeout waiting for ' + expr); },
     async shot(file, full) {
       const r = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: !!full });

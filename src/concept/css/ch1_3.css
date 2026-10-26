@@ -1,0 +1,127 @@
+/* ======================= Ch.1 자료구조 소개 */
+.c1-map { border: 1px solid #dfe5e7; border-radius: 14px; background: #fbfcfc; padding: 18px 18px 12px; }
+.c1-root { margin: 0 auto; width: max-content; max-width: 100%; text-align: center; background: #286b82; color: #fff; border-radius: 12px; padding: 8px 22px; position: relative; }
+.c1-root b { display: block; font-size: 17px; }
+.c1-root span { font-size: 12.5px; opacity: .85; }
+.c1-brs { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-top: 22px; position: relative; }
+.c1-brs::before { content: ""; position: absolute; left: 33%; right: 16%; top: -12px; height: 12px; border: 2px solid #9cc6d4; border-bottom: 0; border-radius: 10px 10px 0 0; }
+.c1-brs::after { content: ""; position: absolute; left: 50%; top: -22px; height: 10px; border-left: 2px solid #9cc6d4; }
+.c1-br { border-radius: 12px; padding: 10px 10px 12px; }
+.c1-br.lin { background: #eef6fb; border: 1px solid #cfe3ee; }
+.c1-br.non { background: #f4f2fb; border: 1px solid #dcd5f1; }
+.c1-bh { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; padding: 0 4px 8px; }
+.c1-bh b { font-size: 15px; }
+.c1-br.lin .c1-bh b { color: #2f7d99; } .c1-br.non .c1-bh b { color: #5b3fa6; }
+.c1-bh span { font-size: 12.5px; color: var(--mut); }
+.c1-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 8px; }
+.c1-card { display: flex; flex-direction: column; align-items: center; gap: 2px; background: #fff; border: 1.5px solid #dfe5e7; border-radius: 10px; padding: 8px 6px 8px; cursor: pointer; font: inherit; color: var(--fg); transition: border-color .15s, transform .15s; }
+.c1-card:hover { border-color: #559cb5; transform: translateY(-1px); }
+.c1-card.on { border-color: #e8890c; box-shadow: 0 0 0 3px #e8890c22; }
+.c1-ic svg { width: 64px; height: 36px; display: block; }
+.c1-card b { font-size: 13.5px; line-height: 1.3; text-align: center; }
+.c1-card em { font-style: normal; font-size: 11px; font-weight: 800; color: #fff; background: #286b82; border-radius: 99px; padding: 0 7px; }
+.c1-card em.later { background: #c9ced0; color: #3d4245; }
+.c1-detail { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; align-items: start; margin-top: 14px; background: #fff; border: 1.5px solid #f3d7ae; border-radius: 12px; padding: 12px 14px; }
+.c1-dic svg { width: 96px; height: 54px; }
+.c1-detail h4 { margin: 0; font-size: 16px; }
+.c1-detail h4 small { font-weight: 600; color: var(--mut); font-size: 12.5px; margin-left: 4px; }
+.c1-detail p { margin: 3px 0 6px; font-size: 14.5px; }
+.c1-detail dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 0; font-size: 13.5px; }
+.c1-detail dt { color: var(--mut); font-weight: 700; }
+.c1-detail dd { margin: 0; }
+.c1-hint { margin: 10px 2px 0; font-size: 13px; color: var(--mut); }
+.c1-why { border: 1px solid #dfe5e7; border-radius: 14px; background: #fbfcfc; padding: 14px 16px; }
+.c1-wtop { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.c1-wtop b { font-size: 14.5px; }
+.c1-wn { display: flex; gap: 5px; flex-wrap: wrap; }
+.c1-wn button { border: 1.5px solid var(--line); background: #fff; border-radius: 99px; padding: 4px 11px; font: 700 12.5px var(--mono); cursor: pointer; color: #3d4245; }
+.c1-wn button.on { border-color: var(--cc, #286b82); background: var(--cc, #286b82); color: #fff; }
+.c1-bars { margin-top: 12px; display: grid; gap: 10px; }
+.c1-row { display: grid; grid-template-columns: 74px minmax(0, 1fr) 150px; gap: 10px; align-items: center; }
+.c1-rl { font-weight: 700; font-size: 14px; }
+.c1-track { height: 22px; background: #edf1f2; border-radius: 6px; overflow: hidden; }
+.c1-track i { display: block; height: 100%; border-radius: 0 4px 4px 0; transition: width .6s cubic-bezier(.4, .1, .2, 1); }
+.c1-row.seq i { background: #d81247; } .c1-row.bin i { background: #2f9e6f; }
+.c1-rv { display: flex; flex-direction: column; line-height: 1.3; font-variant-numeric: tabular-nums; }
+.c1-rv b { font-size: 14.5px; } .c1-rv small { color: var(--mut); font-size: 12px; }
+.c1-ratio { margin: 2px 0 0; font-size: 14px; }
+.c1-wnote { margin: 8px 0 0; font-size: 12px; color: var(--mut); }
+
+/* ======================= Ch.3 알고리즘의 성능 */
+.c3-box { border: 1px solid #dfe5e7; border-radius: 14px; background: #fbfcfc; padding: 14px 16px; }
+.c3-ctl { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; }
+.c3-ctl label { font-weight: 700; font-size: 14px; white-space: nowrap; }
+.c3-ctl input[type=range] { flex: 1; min-width: 160px; accent-color: #c26a00; }
+.c3-nval { font: 800 18px var(--mono); color: #c26a00; min-width: 96px; font-variant-numeric: tabular-nums; }
+.c3-chips { display: flex; gap: 5px; flex-wrap: wrap; }
+.c3-chips button { border: 1.5px solid var(--line); background: #fff; border-radius: 99px; padding: 3px 10px; font: 700 12.5px var(--mono); cursor: pointer; color: #3d4245; }
+.c3-chips button.on, .c3-chips button:hover { border-color: #c26a00; color: #c26a00; }
+.c3-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-top: 12px; align-items: start; }
+.c3-chart { position: relative; }
+.c3-chart svg { width: 100%; height: auto; display: block; touch-action: pan-y; }
+.c3-ax { stroke: #c9ced0; stroke-width: 1; }
+.c3-gl { stroke: #edf0f1; stroke-width: 1; }
+.c3-tk { font-size: 12px; fill: #6d7377; font-family: var(--mono); }
+.c3-axt { font-size: 12.5px; font-weight: 700; fill: #56595c; }
+.c3-ln { fill: none; stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+.c3-dot { stroke: #fff; stroke-width: 2; }
+.c3-dl { font-size: 13px; font-weight: 800; fill: #171a1c; }
+.c3-cur { stroke: #171a1c; stroke-width: 1.2; stroke-dasharray: 4 3; }
+.c3-curl { font: 700 12px var(--mono); fill: #171a1c; }
+.c3-tbl { width: 100%; border-collapse: collapse; font-size: 13.5px; background: #fff; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.c3-tbl th, .c3-tbl td { padding: 7px 9px; border-bottom: 1px solid #edf0f1; text-align: right; font-variant-numeric: tabular-nums; }
+.c3-tbl th:first-child, .c3-tbl td:first-child { text-align: left; white-space: nowrap; }
+.c3-tbl thead th { background: #f3f6f7; font-size: 12.5px; color: #3d4245; }
+.c3-tbl tr:last-child td { border-bottom: 0; }
+.c3-sw { display: inline-block; width: 18px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+.c3-tbl td.bad { color: #b00e3a; font-weight: 700; }
+.c3-tbl td.ok { color: #1f7a52; }
+.c3-tnote { font-size: 12px; color: var(--mut); margin: 6px 2px 0; }
+.c3-tip { position: absolute; pointer-events: none; background: #171a1c; color: #fff; font-size: 12px; border-radius: 6px; padding: 4px 8px; white-space: nowrap; transform: translate(-50%, -120%); display: none; }
+/* 항 비교(규칙) */
+.c3-stack { display: flex; height: 34px; border-radius: 8px; overflow: hidden; margin-top: 12px; gap: 2px; background: #fbfcfc; }
+.c3-stack i { display: flex; align-items: center; justify-content: center; color: #fff; font: 700 12px var(--mono); min-width: 0; overflow: hidden; white-space: nowrap; transition: flex-basis .4s; }
+.c3-leg { display: flex; gap: 6px 16px; flex-wrap: wrap; margin-top: 8px; font-size: 13.5px; }
+.c3-leg span { display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.c3-leg i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.c3-fx { font: 700 16px var(--mono); margin: 0 0 4px; }
+.c3-say { margin: 10px 0 0; font-size: 14.5px; }
+/* 효율성 계산기 */
+.c3-probs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+.c3-probs button { flex: none; border: 1.5px solid var(--line); background: #fff; border-radius: 10px; padding: 6px 11px; cursor: pointer; font: 700 13px var(--ui); color: #3d4245; text-align: left; line-height: 1.35; }
+.c3-probs button small { display: block; font: 500 11.5px var(--mono); color: var(--mut); }
+.c3-probs button.on { border-color: #c26a00; background: #fff6ea; color: #8a4d08; }
+.c3-race { display: grid; gap: 12px; margin-top: 14px; }
+.c3-rr { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 10px; align-items: center; }
+.c3-rr > div:first-child b { display: block; font-size: 14px; }
+.c3-rr > div:first-child small { color: var(--mut); font-size: 12.5px; font-family: var(--mono); }
+.c3-bt { position: relative; height: 30px; background: #edf1f2; border-radius: 7px; }
+.c3-bt i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 7px; transition: width .5s cubic-bezier(.4, .1, .2, 1); }
+.c3-bt.slow i { background: #d81247; } .c3-bt.fast i { background: #2f9e6f; }
+.c3-bt span { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font: 700 12.5px var(--ui); color: #fff; white-space: nowrap; text-shadow: 0 1px 2px #0005; }
+.c3-bt span.c3-out { color: #171a1c; text-shadow: none; }
+.c3-lim { position: absolute; top: -6px; bottom: -6px; border-left: 2px dashed #171a1c; }
+.c3-lim b { position: absolute; top: -20px; left: 0; transform: translateX(-50%); font-size: 11.5px; white-space: nowrap; }
+.c3-verdict { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.c3-verdict div { flex: 1; min-width: 200px; border-radius: 10px; padding: 8px 12px; font-size: 14px; }
+.c3-verdict .no { background: #fff3f5; border: 1px solid #f6cbd5; color: #8d0f30; }
+.c3-verdict .yes { background: #f1f9f4; border: 1px solid #cde8d8; color: #174d38; }
+.c3-scale { font-size: 12px; color: var(--mut); margin: 8px 0 0; }
+.c3-codes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+@media (max-width: 760px) {
+  .c1-brs { grid-template-columns: 1fr; }
+  .c1-brs::before { display: none; }
+  .c1-items { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .c1-detail { grid-template-columns: 1fr; }
+  .c1-dic { display: none; }
+  .c1-row { grid-template-columns: 64px minmax(0, 1fr); }
+  .c1-rv { grid-column: 2; flex-direction: row; gap: 8px; align-items: baseline; }
+  .c3-grid { grid-template-columns: minmax(0, 1fr); }
+  .c3-rr { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .c3-rr .c3-bt { margin-top: 18px; }
+  .c3-codes { grid-template-columns: minmax(0, 1fr); }
+  .c3-tbl { font-size: 12.5px; }
+  .c3-tbl th, .c3-tbl td { padding: 6px 6px; }
+}
+.c3-off { opacity: .4; }
+.ar.c3-jump { stroke: #e8890c; stroke-width: 2.4; }

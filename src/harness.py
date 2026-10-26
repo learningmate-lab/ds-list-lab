@@ -123,12 +123,22 @@ def drive(ns, spec, ops):
         raise Wrong(name + ' 클래스를 찾을 수 없습니다. 문제에 주어진 클래스 이름을 바꾸지 마세요.')
     obj = C()
     q = set(spec.get('queries', []))
+    prints = set(spec.get('prints', []))
+    cap = spec.get('capture') and hasattr(sys.stdout, 'getvalue')
     res = []
     for op in ops:
         f = getattr(obj, op[0], None)
         if not callable(f):
             raise Wrong(name + ' 클래스에 ' + op[0] + ' 메서드가 없습니다.')
+        s0 = len(sys.stdout.getvalue()) if cap else 0
         r = f(*op[1:])
+        if cap:
+            # 실습 코드 문제: 메서드가 print 한 내용도 결과에 넣음 (printList 등은 항상, 다른 메서드는 출력이 있을 때만)
+            txt = '\n'.join(norm(sys.stdout.getvalue()[s0:]))
+            if op[0] in prints or txt:
+                res.append(txt)
+            if op[0] in prints:
+                continue
         if op[0] in q:
             res.append(copy.deepcopy(r) if isinstance(r, (list, tuple, dict)) else r)
     return res

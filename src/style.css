@@ -70,8 +70,14 @@ button, input, select, textarea { font-family: inherit; }
 .card h3 { margin: 0 0 10px; font-size: 15.5px; letter-spacing: -.2px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .card h3 small { font-weight: 500; color: var(--mut); font-size: 12.5px; }
 .scope { margin: 0; padding: 0; list-style: none; font-size: 13.5px; }
-.scope li { display: flex; gap: 8px; padding: 3px 0; border-bottom: 1px dashed #eceeef; }
+.scope li { border-bottom: 1px dashed #eceeef; }
+.scope li a { display: flex; gap: 8px; padding: 3px 4px; margin: 0 -4px; color: inherit; text-decoration: none; border-radius: 6px; }
+.scope li a:hover { background: var(--pri-soft); }
+.scope li a:hover em::after { content: " · 개념 →"; color: var(--pri); }
 .scope li:last-child { border: 0; }
+.scope li.lab a { background: #fff4f6; margin-bottom: 2px; }
+.scope li.lab b { color: var(--red); }
+.scope li.lab em { color: var(--red); font-weight: 700; }
 .scope b { flex: none; width: 40px; color: var(--pri); font-variant-numeric: tabular-nums; }
 .scope em { margin-left: auto; font-style: normal; color: var(--mut); font-size: 12px; white-space: nowrap; }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; padding: 3px; background: #f1f4f5; gap: 3px; }

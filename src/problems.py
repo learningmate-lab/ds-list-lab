@@ -38,6 +38,7 @@
 """
 
 UNITS = [  # (id, 이름, 강의 장)
+    ('lab', '실습 코드 구현', 'Ch.5·6 실습'),
     ('python', '파이썬 기초', 'Ch.4'),
     ('recursion', '재귀', 'Ch.2'),
     ('perf', '알고리즘 성능', 'Ch.3'),
@@ -160,101 +161,6 @@ P(id='arr-find', unit='array', sub='배열 리스트', level=0, title='처음 �
             answer = i
     return answer
 '''])
-
-P(id='arr-reverse', unit='array', sub='배열 리스트', level=0, title='배열 거꾸로 뒤집기',
-  params=[('arr', 'list', '정수 배열')],
-  ret=('list', '뒤집은 배열'),
-  goal='`arr`의 원소 순서를 거꾸로 뒤집은 배열을',
-  desc='''배열을 뒤집는 대표적인 방법은 **양 끝의 두 원소를 맞바꾸고**, 안쪽으로 한 칸씩 좁혀 가며 가운데에서 만날 때까지 반복하는 것입니다. 새 배열 없이 제자리에서 뒤집을 수 있습니다.
-
-정수 배열 `arr`가 주어집니다. (`reverse()`나 `[::-1]`을 쓰지 말고 맞바꾸기로 연습해 보세요. 써도 채점에는 영향이 없습니다.)''',
-  limits=['0 ≤ `arr`의 길이 ≤ 1,000', '-1,000 ≤ `arr`의 원소 ≤ 1,000'],
-  samples=[([[1, 2, 3, 4]], [4, 3, 2, 1], '1↔4, 2↔3을 맞바꾸면 [4, 3, 2, 1]입니다.'),
-           ([[7, 0, 7, 1, 3]], [3, 1, 7, 0, 7], '길이가 홀수이면 가운데 원소(7)는 제자리에 남습니다.'),
-           ([[]], [], '빈 배열은 그대로 빈 배열입니다.')],
-  edges=[[[9]], [[1, 2]], [[5, 5, 5]], [[-3, 0, 3]]],
-  gen=lambda r: [[ints(r, r.randint(3, 20))] for _ in range(5)] + [[ints(r, 1000, -1000, 1000)], [ints(r, 999, -1000, 1000)]],
-  oracle=lambda arr: arr[::-1],
-  sol='''def solution(arr):
-    answer = arr[:]
-    left, right = 0, len(answer) - 1
-    while left < right:                 # 가운데에서 만날 때까지
-        answer[left], answer[right] = answer[right], answer[left]
-        left += 1
-        right -= 1
-    return answer
-''')
-
-P(id='arr-rotate', unit='array', sub='배열 리스트', level=1, title='k칸 오른쪽으로 회전',
-  params=[('arr', 'list', '정수 배열'), ('k', 'int', '회전 칸 수')],
-  ret=('list', '회전한 배열'),
-  goal='`arr`를 오른쪽으로 `k`칸 회전한 배열을',
-  desc='''배열을 오른쪽으로 한 칸 회전하면 맨 끝 원소가 맨 앞으로 오고 나머지는 한 칸씩 뒤로 밀립니다. 예를 들어 [1, 2, 3]을 한 칸 회전하면 [3, 1, 2]가 됩니다.
-
-정수 배열 `arr`와 정수 `k`가 주어집니다. `k`가 매우 클 수 있으니, 한 칸씩 `k`번 돌리면 **시간 초과**가 날 수 있습니다. 길이만큼 돌리면 제자리로 돌아온다는 점을 이용해 보세요.''',
-  limits=['0 ≤ `arr`의 길이 ≤ 1,000', '-1,000 ≤ `arr`의 원소 ≤ 1,000', '0 ≤ `k` ≤ 1,000,000,000'],
-  samples=[([[1, 2, 3, 4, 5], 2], [4, 5, 1, 2, 3], '두 칸 회전하면 끝의 4, 5가 맨 앞으로 옵니다.'),
-           ([[1, 2, 3], 4], [3, 1, 2], '길이 3인 배열을 4칸 회전하는 것은 1칸 회전하는 것과 같습니다.'),
-           ([[], 3], [], '빈 배열은 회전해도 빈 배열입니다.')],
-  edges=[[[1], 5], [[1, 2, 3], 0], [[1, 2, 3], 3], [[4, 5], 1000000000], [[1, 2, 3, 4], 1000000001]],
-  gen=lambda r: [[ints(r, r.randint(2, 20)), r.randint(0, 50)] for _ in range(4)]
-  + [[ints(r, 1000, -1000, 1000), 999999999], [ints(r, 997, -1000, 1000), 123456789]],
-  oracle=lambda arr, k: arr[len(arr) - k % len(arr):] + arr[:len(arr) - k % len(arr)] if arr else [],
-  sol='''def solution(arr, k):
-    n = len(arr)
-    if n == 0:
-        return []
-    k = k % n                     # n칸 돌리면 제자리
-    answer = [0] * n
-    for i in range(n):
-        answer[(i + k) % n] = arr[i]
-    return answer
-''',
-  wrong=['''def solution(arr, k):
-    answer = arr[:]
-    for _ in range(k):
-        if answer:
-            answer = [answer[-1]] + answer[:-1]
-    return answer
-'''])
-
-P(id='arr-dedup', unit='array', sub='배열 리스트', level=1, title='중복 없이 처음 순서대로',
-  params=[('arr', 'list', '정수 배열')],
-  ret=('list', '중복을 지운 배열'),
-  goal='중복을 지운 배열을',
-  desc='''정수 배열 `arr`에서 같은 값이 두 번 이상 나오면 **처음 나온 것만 남기고** 나머지를 지우려고 합니다. 남은 원소들의 순서는 원래 순서를 그대로 유지해야 합니다.
-
-`set()`으로 바꾸면 순서가 바뀔 수 있으니 주의하세요.''',
-  limits=['0 ≤ `arr`의 길이 ≤ 1,000 (효율성 테스트: 100,000)', '-1,000 ≤ `arr`의 원소 ≤ 1,000 (효율성 테스트: -1,000,000 ~ 1,000,000)'],
-  eff_note='효율성 테스트에서는 `arr`의 길이가 100,000까지 커집니다. `v not in answer`처럼 리스트를 처음부터 훑는 검사를 원소마다 하면 시간이 오래 걸립니다.',
-  samples=[([[3, 1, 3, 2, 1]], [3, 1, 2], '두 번째 3과 두 번째 1을 지우면 [3, 1, 2]입니다.'),
-           ([[5, 5, 5]], [5], '모두 같은 값이면 하나만 남습니다.'),
-           ([[]], [], '빈 배열은 그대로입니다.')],
-  edges=[[[1]], [[1, 2, 3]], [[2, 1, 2, 1, 2]], [[-5, 5, -5, 5]]],
-  gen=lambda r: [[ints(r, r.randint(5, 30), -5, 5)] for _ in range(4)] + [[ints(r, 1000, -1000, 1000)], [ints(r, 1000, 30, 60)]],
-  oracle=lambda arr: list(dict.fromkeys(arr)),
-  eff=['import random\nr = random.Random(31)\nargs = [[r.randint(0, 99999) for _ in range(100000)]]',
-       'args = [list(range(100000))]',
-       'import random\nr = random.Random(32)\nargs = [[r.randint(-1000000, 1000000) for _ in range(100000)]]'],
-  sol='''def solution(arr):
-    answer = []
-    seen = set()            # 이미 나온 값
-    for v in arr:
-        if v not in seen:
-            seen.add(v)
-            answer.append(v)
-    return answer
-''',
-  wrong=['''def solution(arr):
-    return sorted(set(arr))
-''', {'slow': True, 'code': '''def solution(arr):
-    answer = []
-    for v in arr:
-        if v not in answer:
-            answer.append(v)
-    return answer
-'''}])
-
 
 def _al_ops(r, n):
     L, ops = [], []
@@ -1688,32 +1594,6 @@ P(id='poly-add', unit='array', sub='응용', level=1, title='다항식 덧셈',
     return answer + a[i:] + b[j:]
 '''])
 
-P(id='sparse', unit='array', sub='응용', level=0, title='희소 리스트로 줄이기',
-  params=[('arr', 'list', '정수 배열')], ret=('pairs', '0이 아닌 원소의 [위치, 값] 목록'),
-  goal='0이 아닌 원소의 [위치, 값]을 위치 순서대로 담은 배열을',
-  desc='''대부분의 원소가 0인 리스트를 **희소 리스트**라고 합니다. 이런 리스트는 0이 아닌 원소의 위치와 값만 저장하면 공간을 크게 줄일 수 있습니다.
-
-정수 배열 `arr`가 주어집니다. 위치는 0부터 셉니다.''',
-  limits=['0 ≤ `arr`의 길이 ≤ 1,000', '-100 ≤ `arr`의 원소 ≤ 100', '0이 아닌 원소가 없으면 빈 배열을 return 합니다. (입출력형: `empty` 출력)'],
-  samples=[([[0, 5, 0, 0, -3, 0]], [[1, 5], [4, -3]], '1번 위치의 5와 4번 위치의 -3만 남깁니다.'),
-           ([[0, 0, 0]], [], '0이 아닌 원소가 없습니다.'),
-           ([[7]], [[0, 7]], '0번 위치의 7입니다.')],
-  edges=[[[]], [[0]], [[1, 2, 3]], [[0, 0, 0, 0, 9]]],
-  gen=lambda r: [[[r.randint(-9, 9) if r.random() < .2 else 0 for _ in range(r.randint(5, 40))]] for _ in range(4)]
-  + [[[r.randint(-100, 100) if r.random() < .05 else 0 for _ in range(1000)]], [ints(r, 1000)]],
-  oracle=lambda arr: [[i, v] for i, v in enumerate(arr) if v != 0],
-  sol='''def solution(arr):
-    answer = []
-    for i in range(len(arr)):
-        if arr[i] != 0:
-            answer.append([i, arr[i]])
-    return answer
-''',
-  wrong=['''def solution(arr):
-    return [[i + 1, v] for i, v in enumerate(arr) if v != 0]
-'''])
-
-
 def _digits(n):
     return [int(c) for c in str(n)[::-1]]
 
@@ -1797,76 +1677,6 @@ P(id='py-even-sum', unit='python', level=0, title='짝수만 더하기',
     return answer
 '''])
 
-P(id='py-slice', unit='python', level=0, title='구간만 거꾸로',
-  params=[('arr', 'list', '정수 배열'), ('s', 'int', '시작 위치'), ('e', 'int', '끝 위치')], ret=('list', '구간을 뒤집은 배열'),
-  goal='`arr`의 `s`번부터 `e`번까지(양 끝 포함)만 거꾸로 뒤집은 배열을',
-  desc='''파이썬 리스트는 슬라이싱 `arr[a:b]`로 일부를 잘라낼 수 있고, `[::-1]`로 순서를 뒤집을 수 있습니다. 잘라낸 조각들은 `+`로 이어 붙일 수 있습니다.
-
-정수 배열 `arr`와 위치 `s`, `e`가 주어집니다. 위치는 0부터 셉니다.''',
-  limits=['1 ≤ `arr`의 길이 ≤ 1,000', '-1,000 ≤ `arr`의 원소 ≤ 1,000', '0 ≤ `s` ≤ `e` < `arr`의 길이'],
-  samples=[([[1, 2, 3, 4, 5], 1, 3], [1, 4, 3, 2, 5], '1번~3번 원소 2, 3, 4를 뒤집어 4, 3, 2로 바꿉니다.'),
-           ([[9, 8], 0, 1], [8, 9], '배열 전체를 뒤집습니다.'),
-           ([[7, 6, 5], 2, 2], [7, 6, 5], '원소 하나짜리 구간은 뒤집어도 같습니다.')],
-  edges=[[[1], 0, 0], [[1, 2, 3], 0, 0], [[1, 2, 3], 1, 2], [[4, 4, 5, 5], 0, 3]],
-  gen=lambda r: [[a, x, r.randint(x, len(a) - 1)] for a in (ints(r, r.randint(2, 20)) for _ in range(4)) for x in [r.randrange(len(a))]]
-  + [[ints(r, 1000, -1000, 1000), 100, 899], [ints(r, 1000, -1000, 1000), 0, 999]],
-  oracle=lambda arr, s, e: arr[:s] + list(reversed(arr[s:e + 1])) + arr[e + 1:],
-  sol='''def solution(arr, s, e):
-    answer = arr[:s] + arr[s:e + 1][::-1] + arr[e + 1:]   # 앞 + 뒤집은 가운데 + 뒤
-    return answer
-''',
-  wrong=['''def solution(arr, s, e):
-    return arr[:s] + arr[s:e][::-1] + arr[e:]
-'''])
-
-P(id='py-grade', unit='python', level=0, title='점수로 학점 매기기',
-  params=[('scores', 'list', '점수 배열')], ret=('strlist', '학점 배열'),
-  goal='각 점수의 학점을 같은 순서로 담은 배열을',
-  desc='''학생들의 점수가 담긴 배열 `scores`가 주어집니다. 다음 기준으로 학점을 매기려고 합니다.
-
-- 90점 이상: `"A"`
-- 80점 이상 90점 미만: `"B"`
-- 70점 이상 80점 미만: `"C"`
-- 60점 이상 70점 미만: `"D"`
-- 60점 미만: `"F"`
-
-학점을 계산하는 함수를 따로 만들어(`def grade(score):`) 반복문에서 불러 써 보세요.''',
-  limits=['1 ≤ `scores`의 길이 ≤ 1,000', '0 ≤ `scores`의 원소 ≤ 100'],
-  samples=[([[95, 80, 79, 60, 12]], ['A', 'B', 'C', 'D', 'F'], '경계값인 80점은 B, 60점은 D입니다.'),
-           ([[100]], ['A'], '100점은 A입니다.')],
-  edges=[[[90, 89, 70, 69, 59, 0]], [[0]], [[60, 60]], [[91, 81, 71, 61, 51]]],
-  gen=lambda r: [[ints(r, r.randint(3, 20), 0, 100)] for _ in range(4)] + [[ints(r, 1000, 0, 100)]],
-  oracle=lambda scores: ['FFFFFFDCBAA'[v // 10] for v in scores],
-  sol='''def grade(score):
-    if score >= 90:
-        return 'A'
-    elif score >= 80:
-        return 'B'
-    elif score >= 70:
-        return 'C'
-    elif score >= 60:
-        return 'D'
-    return 'F'
-
-
-def solution(scores):
-    answer = []
-    for s in scores:
-        answer.append(grade(s))
-    return answer
-''',
-  wrong=['''def solution(scores):
-    answer = []
-    for s in scores:
-        if s > 90: answer.append('A')
-        elif s > 80: answer.append('B')
-        elif s > 70: answer.append('C')
-        elif s > 60: answer.append('D')
-        else: answer.append('F')
-    return answer
-'''])
-
-
 def _wc(words):
     d = {}
     for w in words:
@@ -1900,32 +1710,6 @@ P(id='py-word-count', unit='python', level=1, title='단어 세기 (딕셔너리
     for w in words:
         count[w] = count.get(w, 0) + 1
     return sorted([[w, c] for w, c in count.items()], key=lambda x: -x[1])
-'''])
-
-P(id='py-caesar', unit='python', level=1, title='글자 밀기',
-  params=[('s', 'str', '문자열'), ('k', 'int', '밀 칸 수')], ret=('str', '바꾼 문자열'),
-  goal='`s`의 알파벳을 `k`칸씩 민 문자열을',
-  desc='''문자열 `s`의 각 알파벳을 알파벳 순서로 `k`칸 뒤의 글자로 바꾸려고 합니다. `z` 다음은 다시 `a`입니다. 예를 들어 `"z"`를 1칸 밀면 `"a"`, `"abc"`를 3칸 밀면 `"def"`입니다. 공백은 그대로 둡니다.
-
-`ord()`와 `chr()`로 글자와 번호를 서로 바꿀 수 있습니다. (`ord('a')`는 97)''',
-  limits=['1 ≤ `s`의 길이 ≤ 1,000', '`s`는 알파벳 소문자와 공백으로 이루어져 있으며, 맨 앞과 맨 뒤는 공백이 아닙니다.', '0 ≤ `k` ≤ 1,000'],
-  samples=[(['abc xyz', 3], 'def abc', 'x, y, z는 3칸 밀면 a, b, c가 됩니다.'),
-           (['hello', 26], 'hello', '26칸 밀면 한 바퀴 돌아 제자리입니다.')],
-  edges=[['a', 0], ['z', 1], ['a b', 1000], ['zzz', 27]],
-  gen=lambda r: [[' '.join(_word(r, r.randint(1, 6)) for _ in range(r.randint(1, 5))), r.randint(0, 60)] for _ in range(4)] + [[_word(r, 1000), 999]],
-  oracle=lambda s, k: ''.join(c if c == ' ' else 'abcdefghijklmnopqrstuvwxyz'[('abcdefghijklmnopqrstuvwxyz'.index(c) + k) % 26] for c in s),
-  sol='''def solution(s, k):
-    answer = ''
-    for c in s:
-        if c == ' ':
-            answer += c
-        else:
-            n = (ord(c) - ord('a') + k) % 26    # 0~25 사이 번호로 바꿔 민 뒤
-            answer += chr(ord('a') + n)         # 다시 글자로
-    return answer
-''',
-  wrong=['''def solution(s, k):
-    return ''.join(c if c == ' ' else chr(ord(c) + k) for c in s)
 '''])
 
 # ======================================================================= 재귀 (Ch.2)
@@ -3050,4 +2834,566 @@ P(id='st-maze', unit='stack', level=2, title='미로에서 갈 수 있는 칸 (�
 ''',
   wrong=['''def solution(grid):
     return sum(row.count('.') for row in grid) + 1
+'''])
+
+
+# ======================================================================================
+# 실습 코드 구현 (unit='lab') — 수업 실습 파일(lab_code.py)의 메서드 본문을 비워 두고 직접 완성
+#   · 모범 답안 = 실습 코드 그대로, 기댓값(oracle) = 실습 코드를 같은 명령으로 돌린 결과
+#   · printList / printStack 처럼 출력하는 메서드는 출력 내용을 문자열로 비교 (capture=True)
+# ======================================================================================
+import io as _io
+import re
+import copy
+import sys as _sys
+import harness as _harness
+import lab_code as LAB
+
+NOTE_LAB = '''이 문제는 **수업 실습 코드**를 직접 완성하는 문제입니다. 실습 파일의 클래스에서 일부 메서드의 본문을 비워 두었습니다(`# 여기를 완성하세요`). 나머지 메서드와 이름·매개변수·동작 규칙은 실습 코드와 같으니, 수업 시간에 만든 코드대로 완성해 보세요.'''
+
+
+def lab_blank(src, names):
+    """src 에서 names 메서드(함수)의 본문을 비움. 앞의 주석·def 줄은 그대로 둠"""
+    out, skip, ind = [], False, 0
+    for line in src.split('\n'):
+        st = line.strip()
+        cur = len(line) - len(line.lstrip())
+        if skip:
+            if st == '' or cur > ind:
+                continue
+            skip = False
+        m = re.match(r'\s*def (\w+)\(', line)
+        if m and m.group(1) in names:
+            out.append(line)
+            out.append(' ' * (cur + 4) + '# 여기를 완성하세요')
+            out.append(' ' * (cur + 4) + 'pass')
+            out.append('')
+            skip, ind = True, cur
+            continue
+        out.append(line)
+    s = '\n'.join(out)
+    s = re.sub(r'\n{3,}', '\n\n', s)
+    for n in names:
+        assert ('def %s(' % n) in s, n
+    return s
+
+
+def lab_oracle(code, cls, methods):
+    spec = {'cls': cls, 'queries': [m[0] for m in methods if m[2] and m[2] != 'print'],
+            'prints': [m[0] for m in methods if m[2] == 'print'], 'capture': True}
+
+    def f(ops):
+        ns = {'__name__': '__lab__'}
+        exec(code, ns)
+        old = _sys.stdout
+        _sys.stdout = _io.StringIO()
+        try:
+            return _harness.drive(ns, spec, copy.deepcopy(ops))
+        finally:
+            _sys.stdout = old
+    return f
+
+
+def lab_bug(code, a, b):
+    assert code.count(a) >= 1, a
+    return code.replace(a, b, 1)
+
+
+# ---------------------------------------------------------------- 명령 만들기
+def _lab_ops(r, n, kinds, opt_arg=False, vmax=20, maxlen=None):
+    """kinds: {명령: 가중치}. 길이 모형(L)으로 인덱스를 대부분 올바르게, 가끔 범위 밖으로 고름"""
+    L, ops = [], []
+    names = list(kinds)
+    w = [kinds[k] for k in names]
+    for _ in range(n):
+        k = r.choices(names, w)[0]
+        if k in ('append', 'push'):
+            if maxlen and len(L) >= maxlen:
+                k = 'pop' if 'pop' in kinds else k
+            else:
+                x = r.randint(0, vmax)
+                ops.append([k, x]); L.append(x); continue
+        if k == 'insert':
+            i = r.randint(0, len(L)) if r.random() < .85 else r.choice([len(L) + 1, len(L) + 3, -1])
+            x = r.randint(0, vmax)
+            ops.append(['insert', i, x])
+            if 0 <= i <= len(L):
+                L.insert(i, x)
+        elif k == 'pop':
+            if opt_arg and r.random() < .3:
+                ops.append(['pop'])
+                if L:
+                    L.pop()
+            elif L and r.random() < .85:
+                i = r.randint(0, len(L) - 1) if not (opt_arg and r.random() < .15) else -1
+                ops.append(['pop', i]); L.pop(i)
+            else:
+                ops.append(['pop', len(L) + r.randint(0, 2)])
+        elif k == 'spop':          # 스택 pop (인자 없음)
+            ops.append(['pop'])
+            if L:
+                L.pop()
+        elif k == 'remove':
+            x = r.choice(L) if L and r.random() < .75 else r.randint(0, vmax)
+            ops.append(['remove', x])
+            if x in L:
+                L.remove(x)
+        elif k == 'get':
+            if opt_arg and r.random() < .2:
+                ops.append(['get'])
+            else:
+                ops.append(['get', r.randint(0, len(L) - 1) if L and r.random() < .8 else len(L) + r.randint(0, 2)])
+        elif k in ('index', 'count'):
+            ops.append([k, r.choice(L) if L and r.random() < .7 else r.randint(0, vmax)])
+        elif k in ('clear', 'popAll'):
+            ops.append([k]); L = []
+        elif k == 'reverse':
+            ops.append([k]); L.reverse()
+        elif k == 'sort':
+            ops.append([k]); L.sort()
+        else:
+            ops.append([k])
+    return ops
+
+
+def lab_problem(pid, level, title, cls, prelude, code, blank, methods, kinds, desc, limits, sample_ops, edges, wrong, sub, opt_arg=False, extra_desc='', big=300, **kw):
+    full = prelude + '\n\n' + code
+    orc = lab_oracle(full, cls, methods)
+    samples = [([ops], orc(ops), ex) for ops, ex in sample_ops]
+    endk = [m[0] for m in methods if m[2] == 'print']
+    endo = [[endk[0]]] if endk else []
+
+    def gen(r):
+        return [[_lab_ops(r, r.randint(6, 18), kinds, opt_arg) + endo] for _ in range(6)] + [[_lab_ops(r, big, kinds, opt_arg) + endo]]
+    return P(id=pid, unit='lab', sub=sub, level=level, title=title, kind='class', cls=cls, capture=True, prelude=prelude,
+             tmpl=lab_blank(code, blank), init=[], methods=methods,
+             params=[('commands', 'ops', '명령 목록')], ret=('ops', '결과 목록'), goal='',
+             desc=NOTE_LAB + '\n\n' + desc + (('\n\n' + extra_desc) if extra_desc else ''),
+             limits=limits, samples=samples, edges=[[e] for e in edges], gen=gen, oracle=lambda ops: orc(ops),
+             sol=code, wrong=wrong, **kw)
+
+
+LN = LAB.LISTNODE.rstrip()
+LLB_M = {
+    'insert': ('insert', ['i', 'x'], None, '`i`번 자리에 `x`를 넣습니다. `i`가 0 ~ 원소 수 범위를 벗어나면 넣지 않고 `index i : out of bound in insert()` 를 출력합니다.'),
+    'append': ('append', ['x'], None, '맨 뒤에 `x`를 넣습니다.'),
+    'pop': ('pop', ['i'], 'val', '`i`번 원소를 지우고 그 값을 돌려줍니다. 범위를 벗어나면 `None`을 돌려줍니다.'),
+    'remove': ('remove', ['x'], 'val', '처음 나오는 `x`를 지우고 `x`를 돌려줍니다. 없으면 `None`을 돌려줍니다.'),
+    'get': ('get', ['i'], 'val', '`i`번 원소를 돌려줍니다. 비어 있거나 범위를 벗어나면 `None`을 돌려줍니다.'),
+    'index': ('index', ['x'], 'int', '`x`가 처음 나오는 위치를 돌려줍니다. 없으면 **-2**를 돌려줍니다.'),
+    'isEmpty': ('isEmpty', [], 'bool', '비어 있으면 `True`, 아니면 `False`를 돌려줍니다.'),
+    'size': ('size', [], 'int', '원소 수를 돌려줍니다.'),
+    'clear': ('clear', [], None, '모든 원소를 지웁니다.'),
+    'count': ('count', ['x'], 'int', '`x`의 개수를 돌려줍니다.'),
+    'reverse': ('reverse', [], None, '원소의 순서를 거꾸로 바꿉니다.'),
+    'sort': ('sort', [], None, '원소를 오름차순으로 정렬합니다.'),
+    'printList': ('printList', [], 'print', '0번 원소부터 차례로 값 뒤에 공백 하나를 붙여 한 줄에 출력합니다. (빈 리스트면 빈 줄)'),
+}
+LIM_LAB = ['1 ≤ 명령의 수 ≤ 400', '넣는 값 `x`는 0 이상 20 이하의 정수', '`i`는 -1 이상의 정수 (범위를 벗어난 값이 주어질 수 있음)']
+
+
+def M(*names, src=LLB_M):
+    return [src[n] for n in names]
+
+
+LLB = LAB.LLB.rstrip()
+lab_problem('lab-llb-basic', 0, 'LinkedListBasic ① append · size · isEmpty · printList', 'LinkedListBasic', LN, LLB,
+            ['append', 'isEmpty', 'size', 'printList'], M('append', 'size', 'isEmpty', 'printList', 'pop'),
+            {'append': 5, 'size': 1, 'isEmpty': 1, 'printList': 2, 'pop': 1},
+            '''실습 파일 `linkedListBasic.py`(코드 5-15)의 `LinkedListBasic`은 맨 앞에 **더미 헤드** `__head`를 두고 원소 수를 `__numItems`에 저장하는 연결 리스트입니다. 노드는 `listNode.py`(코드 5-1)의 `ListNode(item, next)`를 씁니다.
+
+`append`, `isEmpty`, `size`, `printList`를 완성하세요. (`insert`, `pop`, `__getNode` 등은 완성되어 있습니다.)''',
+            LIM_LAB, [([['append', 3], ['append', 7], ['size'], ['printList'], ['pop', 0], ['isEmpty'], ['printList']], '3, 7을 차례로 넣으면 크기는 2이고 `3 7 `을 출력합니다. 0번을 지우면 7만 남습니다.'),
+                      ([['isEmpty'], ['printList'], ['append', 5], ['isEmpty']], '처음에는 비어 있어 `True`, 빈 리스트의 printList는 빈 줄을 출력합니다.')],
+            [[['printList']], [['append', 0], ['append', 0], ['size'], ['pop', 1], ['pop', 0], ['size'], ['isEmpty'], ['printList']]],
+            [lab_bug(LLB, '''        prev.next = newNode
+        self.__numItems += 1
+
+    # [알고리즘 5-3]''', '''        prev.next = newNode
+
+    # [알고리즘 5-3]'''),
+             lab_bug(LLB, '''        curr = self.__head.next # 0번 노드: 더미 헤드 다음 노드
+        while curr != None:
+            print(curr.item, end = ' ')''', '''        curr = self.__head # 0번 노드: 더미 헤드 다음 노드
+        while curr != None:
+            print(curr.item, end = ' ')''')],
+            '단순 연결 리스트')
+
+lab_problem('lab-llb-insert', 1, 'LinkedListBasic ② __getNode · insert', 'LinkedListBasic', LN, LLB,
+            ['insert', '__getNode'], M('insert', 'append', 'get', 'size', 'printList'),
+            {'insert': 6, 'append': 2, 'get': 2, 'size': 1, 'printList': 2},
+            '''`__getNode(i)`(알고리즘 5-6)는 더미 헤드(-1번)에서 출발해 `next`를 `i + 1`번 따라가 i번 노드를 돌려줍니다. `insert(i, x)`(알고리즘 5-2)는 `__getNode(i - 1)`로 앞 노드를 찾아 그 뒤에 새 노드를 넣습니다.
+
+두 메서드를 완성하세요. `append`와 `get`도 `__getNode`를 쓰므로 `__getNode`가 틀리면 함께 틀립니다. `i`가 범위를 벗어나면 실습 코드처럼 `index i : out of bound in insert()`를 출력합니다(`print("index", i, ": out of bound in insert()")`).''',
+            LIM_LAB, [([['insert', 0, 10], ['insert', 1, 30], ['insert', 1, 20], ['printList'], ['insert', 5, 99], ['get', 2]], '[10] → [10, 30] → [10, 20, 30]. 5번 자리는 범위 밖이라 안내 문구를 출력하고 넣지 않습니다.'),
+                      ([['append', 1], ['insert', 0, 0], ['size'], ['printList']], '맨 앞(0번)에 넣는 것도 더미 헤드 덕분에 같은 코드로 처리됩니다.')],
+            [[['insert', -1, 3], ['insert', 1, 3], ['printList']], [['insert', 0, 1], ['insert', 1, 2], ['insert', 2, 3], ['insert', 0, 0], ['get', 3], ['printList']]],
+            [lab_bug(LLB, 'for index in range(i+1):', 'for index in range(i):'),
+             lab_bug(LLB, '''            newNode = ListNode(newItem, prev.next)
+            prev.next = newNode
+            self.__numItems += 1
+        else:''', '''            newNode = ListNode(newItem, None)
+            prev.next = newNode
+            newNode.next = prev.next
+            self.__numItems += 1
+        else:'''),
+             lab_bug(LLB, 'if i >= 0 and i <= self.__numItems:', 'if i >= 0 and i < self.__numItems:')],
+            '단순 연결 리스트', stub_error_ok=True)
+
+lab_problem('lab-llb-pop', 1, 'LinkedListBasic ③ pop · remove · __findNode', 'LinkedListBasic', LN, LLB,
+            ['pop', 'remove', '__findNode'], M('append', 'pop', 'remove', 'size', 'printList'),
+            {'append': 5, 'pop': 3, 'remove': 3, 'size': 1, 'printList': 2},
+            '''`pop(i)`(알고리즘 5-3)은 i번 노드를 지우고 그 값을 돌려줍니다. `remove(x)`(알고리즘 5-4)는 `__findNode(x)`로 (앞 노드, x가 든 노드) 쌍을 찾아 지웁니다. `__findNode`는 찾지 못하면 `(None, None)`을 돌려줍니다.
+
+세 메서드를 완성하세요. 지운 뒤에는 `__numItems`도 줄여야 합니다.''',
+            LIM_LAB, [([['append', 5], ['append', 6], ['append', 7], ['pop', 1], ['remove', 5], ['remove', 9], ['pop', 3], ['printList'], ['size']], '[5, 6, 7]에서 1번(6)을 지우고, 5를 지웁니다. 9는 없어서 `None`, 3번은 범위 밖이라 `None`입니다. 7만 남습니다.'),
+                      ([['pop', 0], ['remove', 1], ['size']], '빈 리스트에서는 지울 것이 없습니다.')],
+            [[['append', 1], ['append', 1], ['remove', 1], ['printList'], ['pop', 0], ['printList']], [['append', 2], ['pop', -1], ['pop', 1], ['pop', 0], ['size']]],
+            [lab_bug(LLB, '''            prev.next = curr.next
+            retItem = curr.item
+            self.__numItems -= 1''', '''            prev.next = curr.next
+            retItem = curr.item'''),
+             lab_bug(LLB, '''            prev = self.__getNode(i - 1)
+            curr = prev.next
+            prev.next = curr.next''', '''            prev = self.__getNode(i)
+            curr = prev.next
+            prev.next = curr.next'''),
+             lab_bug(LLB, '''                prev = curr; curr = curr.next
+        return (None, None)''', '''                curr = curr.next
+        return (None, None)''')],
+            '단순 연결 리스트', stub_error_ok=True)
+
+lab_problem('lab-llb-search', 0, 'LinkedListBasic ④ get · index · count', 'LinkedListBasic', LN, LLB,
+            ['get', 'index', 'count'], M('append', 'get', 'index', 'count', 'pop'),
+            {'append': 5, 'get': 3, 'index': 3, 'count': 2, 'pop': 1},
+            '''`get(i)`(알고리즘 5-5)은 i번 원소를, `index(x)`(알고리즘 5-7)는 x의 위치를, `count(x)`는 x의 개수를 돌려줍니다.
+
+실습 코드의 규칙을 그대로 따르세요: `get`은 비어 있거나 범위를 벗어나면 `None`, `index`는 없으면 **-2** (“안 쓰는 인덱스”)를 돌려줍니다.''',
+            LIM_LAB, [([['append', 4], ['append', 9], ['append', 4], ['get', 1], ['get', 3], ['index', 4], ['index', 8], ['count', 4]], '1번은 9, 3번은 없어서 `None`. 4는 0번에 처음 나오고, 8은 없어서 -2. 4는 2개입니다.'),
+                      ([['get', 0], ['index', 0], ['count', 0]], '빈 리스트입니다.')],
+            [[['append', 1], ['get', -1], ['get', 0], ['pop', 0], ['get', 0], ['index', 1]]],
+            [lab_bug(LLB, 'return -2 # 안 쓰는 인덱스', 'return -1 # 안 쓰는 인덱스'),
+             lab_bug(LLB, '''        if (i >= 0 and i <= self.__numItems - 1):
+            return self.__getNode(i).item''', '''        if (i >= 0 and i <= self.__numItems):
+            return self.__getNode(i).item'''),
+             lab_bug(LLB, '''            if curr.item == x:
+                    cnt += 1
+            curr = curr.next''', '''            if curr.item == x:
+                    cnt += 1
+                    curr = curr.next''')],
+            '단순 연결 리스트', stub_error_ok=True)
+
+lab_problem('lab-llb-etc', 1, 'LinkedListBasic ⑤ clear · reverse · sort', 'LinkedListBasic', LN, LLB,
+            ['clear', 'reverse', 'sort'], M('append', 'clear', 'reverse', 'sort', 'size', 'get', 'printList'),
+            {'append': 6, 'clear': 1, 'reverse': 2, 'sort': 2, 'size': 1, 'get': 1, 'printList': 2},
+            '''알고리즘 5-8의 기타 작업 중 `clear`, `reverse`, `sort`를 완성하세요.
+
+- `clear()` : 더미 헤드만 남기고 원소 수를 0으로
+- `reverse()` : 순서를 거꾸로 (실습 코드는 새 리스트에 `insert(0, …)`로 모은 뒤 다시 채웁니다)
+- `sort()` : 오름차순 정렬 (실습 코드는 파이썬 리스트에 모아 `sort()` 한 뒤 다시 채웁니다)''',
+            LIM_LAB, [([['append', 3], ['append', 1], ['append', 2], ['reverse'], ['printList'], ['sort'], ['printList'], ['clear'], ['size'], ['printList']], '[3, 1, 2] → 뒤집으면 [2, 1, 3] → 정렬하면 [1, 2, 3] → clear 하면 빈 리스트입니다.'),
+                      ([['reverse'], ['sort'], ['printList'], ['append', 5], ['printList']], '빈 리스트를 뒤집거나 정렬해도 그대로입니다.')],
+            [[['append', 1], ['clear'], ['append', 2], ['get', 0], ['size']]],
+            [lab_bug(LLB, '''    def clear(self):
+        self.__head = ListNode("dummy", None)
+        self.__numItems = 0''', '''    def clear(self):
+        self.__head = ListNode("dummy", None)'''),
+             lab_bug(LLB, '            a.insert(0, self.get(index))', '            a.append(self.get(index))'),
+             lab_bug(LLB, '''        a.sort()
+        self.clear()
+        for index in range(len(a)):
+            self.append(a[index])''', '''        a.sort()
+        for index in range(len(a)):
+            self.append(a[index])''')],
+            '단순 연결 리스트')
+
+lab_problem('lab-llb-full', 2, 'LinkedListBasic 전체 구현 (코드 5-15)', 'LinkedListBasic', LN, LLB,
+            ['insert', 'append', 'pop', 'remove', 'get', 'index', 'isEmpty', 'size', 'clear', 'count', 'extend', 'copy', 'reverse', 'sort', '__findNode', '__getNode', 'printList'],
+            M('insert', 'append', 'pop', 'remove', 'get', 'index', 'isEmpty', 'size', 'clear', 'count', 'reverse', 'sort', 'printList'),
+            {'insert': 4, 'append': 4, 'pop': 3, 'remove': 2, 'get': 2, 'index': 2, 'isEmpty': 1, 'size': 1, 'clear': .3, 'count': 1, 'reverse': 1, 'sort': 1, 'printList': 2},
+            '''`__init__`(더미 헤드와 `__numItems`)만 남기고 `LinkedListBasic`의 모든 메서드를 비웠습니다. 실습 파일 `linkedListBasic.py`(코드 5-15) 전체를 처음부터 다시 구현해 보세요. 시험에서 “실습 때 만든 자료구조를 직접 짜 보라”는 문제에 가장 가까운 연습입니다.
+
+(`extend`, `copy`는 채점에 쓰지 않지만 실습 코드와 같이 완성해 두세요.)''',
+            LIM_LAB, [([['append', 30], ['insert', 0, 20], ['append', 4], ['append', 3], ['reverse'], ['pop', 0], ['count', 3], ['get', 2], ['printList']], '실습 데모(코드 5-16)와 비슷한 순서입니다. [20, 30, 4, 3] → 뒤집으면 [3, 4, 30, 20] → 0번을 지우면 [4, 30, 20].'),
+                      ([['insert', 2, 1], ['remove', 7], ['index', 7], ['isEmpty'], ['sort'], ['printList']], '빈 리스트에서의 동작입니다. 범위 밖 insert는 안내 문구를 출력합니다.')],
+            [[['append', 5], ['clear'], ['isEmpty'], ['insert', 0, 1], ['insert', 1, 2], ['remove', 1], ['printList']]],
+            [lab_bug(LLB, 'for index in range(i+1):', 'for index in range(i):'),
+             lab_bug(LLB, '''            prev.next = curr.next
+            retItem = curr.item
+            self.__numItems -= 1''', '''            prev.next = curr.next
+            retItem = curr.item''')],
+            '단순 연결 리스트', big=400)
+
+# ---------------------------------------------------------------- 원형 연결 리스트
+CLL = LAB.CLL.rstrip()
+CLL_M = dict(LLB_M)
+CLL_M.update({
+    'pop': ('pop', ['[i]'], 'val', '인자가 없거나 -1이면 맨 끝, 아니면 `i`번 원소를 지우고 값을 돌려줍니다. 비어 있거나 범위를 벗어나면 `None`.'),
+    'get': ('get', ['[i]'], 'val', '인자가 없거나 -1이면 맨 끝, 아니면 `i`번 원소를 돌려줍니다. 비어 있거나 범위를 벗어나면 `None`.'),
+    'index': ('index', ['x'], 'int', '`x`가 처음 나오는 위치를 돌려줍니다. 없으면 **-12345**를 돌려줍니다.'),
+    'printList': ('printList', [], 'print', '0번 원소부터 값 뒤에 공백 하나씩 붙여 한 줄에 출력합니다 (순회자 `for element in self` 사용).'),
+})
+NOTE_CLL = '''실습 파일 `circularLinkedList.py`(코드 5-22)의 `CircularLinkedList`는 **더미 노드**를 하나 두고, 마지막 노드를 가리키는 `__tail`만 저장하는 원형 연결 리스트입니다. 마지막 노드의 `next`는 더미 노드이고, 더미 노드의 `next`가 0번 노드입니다(`__tail.next`가 더미). 비어 있으면 `__tail`이 더미 자신을 가리킵니다. `getNode(i)`는 더미(-1번)에서 출발합니다.'''
+lab_problem('lab-cll-ins', 1, '원형 연결 리스트 ① insert · append (tail 관리)', 'CircularLinkedList', LN, CLL,
+            ['insert', 'append'], M('insert', 'append', 'get', 'pop', 'size', 'printList', src=CLL_M),
+            {'insert': 5, 'append': 5, 'get': 2, 'pop': 1, 'size': 1, 'printList': 2},
+            NOTE_CLL + '''
+
+`insert(i, x)`와 `append(x)`를 완성하세요. 맨 끝에 넣었을 때는 **`__tail`을 새 노드로** 옮겨야 합니다. `append`는 `getNode`를 쓰지 않고 `__tail`만으로 O(1)에 넣습니다.''',
+            LIM_LAB, [([['append', 1], ['append', 2], ['insert', 2, 3], ['append', 4], ['get'], ['printList']], '맨 끝(2번)에 3을 넣으면 tail이 3이 되어야, 다음 append(4)가 3 뒤에 붙습니다.'),
+                      ([['insert', 0, 7], ['insert', 0, 6], ['insert', 3, 9], ['printList'], ['size']], '범위 밖 insert는 안내 문구를 출력합니다.')],
+            [[['insert', 0, 1], ['append', 2], ['pop'], ['append', 3], ['printList']]],
+            [lab_bug(CLL, '''            if i == self.__numItems:
+                self.__tail = newNode
+            self.__numItems += 1''', '''            self.__numItems += 1'''),
+             lab_bug(CLL, '''        self.__tail.next = newNode
+        self.__tail = newNode
+        self.__numItems += 1''', '''        self.__tail.next = newNode
+        self.__numItems += 1''')],
+            '원형 연결 리스트', opt_arg=True)
+
+lab_problem('lab-cll-pop', 2, '원형 연결 리스트 ② pop · remove (tail 관리)', 'CircularLinkedList', LN, CLL,
+            ['pop', 'remove'], M('append', 'insert', 'pop', 'remove', 'size', 'printList', src=CLL_M),
+            {'append': 5, 'insert': 2, 'pop': 4, 'remove': 3, 'size': 1, 'printList': 2},
+            NOTE_CLL + '''
+
+`pop(*args)`와 `remove(x)`를 완성하세요. `pop`은 파이썬 리스트처럼 인자가 없거나 -1이면 맨 끝 원소를 지웁니다. **맨 끝 노드를 지우면 `__tail`을 앞 노드로** 옮겨야 다음 append가 올바른 자리에 붙습니다.''',
+            LIM_LAB, [([['append', 1], ['append', 2], ['append', 3], ['pop'], ['append', 4], ['remove', 4], ['append', 5], ['printList']], '맨 끝(3)을 지우면 tail이 2가 되어야 4가 2 뒤에 붙습니다. 4를 remove하면 tail이 다시 2가 되어야 5가 2 뒤에 붙습니다.'),
+                      ([['pop'], ['pop', 0], ['remove', 1], ['append', 9], ['pop', -1], ['size']], '비어 있으면 `None`. `pop(-1)`은 맨 끝입니다.')],
+            [[['append', 1], ['pop', 0], ['append', 2], ['printList']], [['append', 1], ['append', 2], ['pop', 2], ['pop', 1], ['printList']]],
+            [lab_bug(CLL, '''            if i == self.__numItems - 1:
+                self.__tail = prev
+            self.__numItems -= 1''', '''            self.__numItems -= 1'''),
+             lab_bug(CLL, '''            if curr == self.__tail:
+                self.__tail = prev
+            self.__numItems -= 1''', '''            self.__numItems -= 1''')],
+            '원형 연결 리스트', opt_arg=True, stub_error_ok=True)
+
+lab_problem('lab-cll-rev', 2, '원형 연결 리스트 ③ reverse · index · count', 'CircularLinkedList', LN, CLL,
+            ['reverse', 'index', 'count'], M('append', 'reverse', 'index', 'count', 'get', 'printList', src=CLL_M),
+            {'append': 5, 'reverse': 2, 'index': 2, 'count': 2, 'get': 1, 'printList': 2},
+            NOTE_CLL + '''
+
+`reverse()`는 새 노드를 만들지 않고 **화살표 방향만 뒤집어** 순서를 바꿉니다 (더미 노드도 원 안에 있으니 함께 고려하고, `__tail`도 새 마지막 노드로). `index(x)`와 `count(x)`는 순회자(`for element in self`)로 구현하세요. `index`는 없으면 **-12345**를 돌려줍니다.''',
+            LIM_LAB, [([['append', 1], ['append', 2], ['append', 3], ['reverse'], ['printList'], ['append', 4], ['get'], ['index', 1], ['index', 7], ['count', 2]], '뒤집으면 [3, 2, 1]. tail이 1이 되어야 4가 1 뒤에 붙습니다.'),
+                      ([['append', 5], ['reverse'], ['printList'], ['count', 5]], '원소가 1개면 뒤집어도 그대로입니다.')],
+            [[['append', 1], ['append', 2], ['reverse'], ['reverse'], ['append', 3], ['printList']]],
+            [lab_bug(CLL, 'curr.next = __head; __head.next = self.__tail; self.__tail = curr', 'curr.next = __head; __head.next = self.__tail'),
+             lab_bug(CLL, '''            cnt += 1
+        return -12345''', '''            cnt += 1
+        return -1''')],
+            '원형 연결 리스트', opt_arg=True, stub_error_ok=True)
+
+# ---------------------------------------------------------------- 원형 이중 연결 리스트
+CDLL = LAB.CDLL.rstrip()
+BI = LAB.BIDI.rstrip()
+NOTE_CDLL = '''실습 파일 `circularDoublyLinkedList.py`(코드 5-25)의 `CircularDoublyLinkedList`는 노드 `BidirectNode(item, prev, next)`(코드 5-24)를 쓰는 **원형 이중 연결 리스트**입니다. 더미 헤드 `__head`의 `next`는 0번 노드, `prev`는 마지막 노드이고, 비어 있으면 더미가 자기 자신을 가리킵니다. 그래서 맨 앞·맨 끝 예외 처리가 필요 없습니다.'''
+lab_problem('lab-cdll-ins', 1, '원형 이중 연결 리스트 ① insert · append', 'CircularDoublyLinkedList', BI, CDLL,
+            ['insert', 'append'], M('insert', 'append', 'pop', 'get', 'reverse', 'printList', src=CLL_M),
+            {'insert': 5, 'append': 5, 'pop': 2, 'get': 2, 'reverse': 1, 'printList': 2},
+            NOTE_CDLL + '''
+
+`insert(i, x)`와 `append(x)`를 완성하세요. 새 노드의 `prev`·`next`, 앞 노드의 `next`, 뒤 노드의 `prev`까지 **4곳**이 맞아야 합니다. (완성되어 있는 `pop`, `reverse`가 `prev` 링크를 쓰므로, prev가 틀리면 그 결과도 틀립니다.)''',
+            LIM_LAB, [([['append', 2], ['insert', 0, 1], ['append', 4], ['insert', 2, 3], ['printList'], ['pop'], ['reverse'], ['printList']], '[1, 2, 3, 4]를 만든 뒤 맨 끝을 지우고 뒤집으면 [3, 2, 1].'),
+                      ([['insert', 1, 5], ['append', 6], ['get', -1], ['printList']], '범위 밖 insert는 안내 문구를 출력합니다.')],
+            [[['insert', 0, 1], ['insert', 0, 2], ['pop', 1], ['append', 3], ['reverse'], ['printList']]],
+            [lab_bug(CDLL, '''            newNode.next.prev = newNode
+            prev.next = newNode''', '''            prev.next = newNode'''),
+             lab_bug(CDLL, '''        prev.next = newNode
+        self.__head.prev = newNode
+        self.__numItems += 1''', '''        prev.next = newNode
+        self.__numItems += 1''')],
+            '원형 이중 연결 리스트', opt_arg=True)
+
+lab_problem('lab-cdll-pop', 1, '원형 이중 연결 리스트 ② pop · remove', 'CircularDoublyLinkedList', BI, CDLL,
+            ['pop', 'remove', '__findNode'], M('append', 'insert', 'pop', 'remove', 'size', 'printList', src=CLL_M),
+            {'append': 5, 'insert': 2, 'pop': 4, 'remove': 3, 'size': 1, 'printList': 2},
+            NOTE_CDLL + '''
+
+`pop(*args)`, `remove(x)`, `__findNode(x)`를 완성하세요. 이중 연결 리스트는 지울 노드 `curr`만 찾으면 `curr.prev`와 `curr.next`를 서로 이어 주면 됩니다(2곳). `__findNode`는 x가 든 노드를, 없으면 `None`을 돌려줍니다.''',
+            LIM_LAB, [([['append', 1], ['append', 2], ['append', 3], ['pop', 1], ['pop'], ['append', 4], ['remove', 1], ['remove', 9], ['printList']], '2를 지우고 맨 끝 3을 지운 뒤 4를 붙이면 [1, 4]. 1을 지우면 [4].'),
+                      ([['pop'], ['remove', 0], ['size']], '비어 있으면 `None`입니다.')],
+            [[['append', 1], ['pop', 0], ['append', 2], ['insert', 0, 3], ['printList']]],
+            [lab_bug(CDLL, '''            curr.prev.next = curr.next
+            curr.next.prev = curr.prev
+            self.__numItems -= 1
+            return retItem''', '''            curr.prev.next = curr.next
+            self.__numItems -= 1
+            return retItem'''),
+             lab_bug(CDLL, '''            retItem = curr.item
+            curr.prev.next = curr.next''', '''            retItem = curr.item
+            curr = curr.prev
+            curr.prev.next = curr.next''')],
+            '원형 이중 연결 리스트', opt_arg=True, stub_error_ok=True)
+
+lab_problem('lab-cdll-rev', 2, '원형 이중 연결 리스트 ③ reverse', 'CircularDoublyLinkedList', BI, CDLL,
+            ['reverse'], M('append', 'insert', 'pop', 'reverse', 'get', 'printList', src=CLL_M),
+            {'append': 5, 'insert': 2, 'pop': 2, 'reverse': 2, 'get': 1, 'printList': 2},
+            NOTE_CDLL + '''
+
+`reverse()`를 완성하세요. 새 노드를 만들지 말고, 더미를 포함한 **모든 노드의 `prev`와 `next`를 서로 바꿔** 순서를 뒤집습니다. 뒤집은 뒤에도 `append`, `pop()`이 올바르게 동작해야 합니다.''',
+            LIM_LAB, [([['append', 1], ['append', 2], ['append', 3], ['reverse'], ['printList'], ['append', 4], ['pop', 0], ['printList']], '뒤집으면 [3, 2, 1], 4를 붙이고 0번을 지우면 [2, 1, 4].'),
+                      ([['reverse'], ['append', 1], ['reverse'], ['printList']], '빈 리스트를 뒤집어도 문제가 없어야 합니다.')],
+            [[['append', 1], ['append', 2], ['reverse'], ['reverse'], ['pop'], ['printList']]],
+            [lab_bug(CDLL, 'self.__head.next = prev.prev; self.__head.prev = curr', 'self.__head.next = prev.prev'),
+             lab_bug(CDLL, 'curr.next = prev; curr.prev = next', 'curr.next = prev')],
+            '원형 이중 연결 리스트', opt_arg=True, stub_error_ok=True)
+
+# ---------------------------------------------------------------- 스택
+LS_SRC = LAB.LISTSTACK.rstrip()
+LKS_SRC = LAB.LINKEDSTACK.rstrip()
+ST_M = {
+    'push': ('push', ['x'], None, '`x`를 스택 맨 위에 넣습니다.'),
+    'pop': ('pop', [], 'val', '맨 위 원소를 꺼내 돌려줍니다.'),
+    'top': ('top', [], 'val', '맨 위 원소를 돌려줍니다(꺼내지 않음). 비어 있으면 `None`.'),
+    'isEmpty': ('isEmpty', [], 'bool', '비어 있으면 `True`.'),
+    'popAll': ('popAll', [], None, '모든 원소를 지웁니다.'),
+    'printStack': ('printStack', [], 'print', '실습 코드 형식으로 맨 위부터 출력합니다.'),
+}
+
+
+def _labst_ops(r, n, empty_pop):
+    ops, k = [], 0
+    for _ in range(n):
+        c = r.random()
+        if c < .45 or (k == 0 and not empty_pop and c < .7):
+            ops.append(['push', r.randint(0, 99)]); k += 1
+        elif c < .7:
+            if k or empty_pop:
+                ops.append(['pop']); k = max(0, k - 1)
+        elif c < .8:
+            ops.append(['top'])
+        elif c < .87:
+            ops.append(['isEmpty'])
+        elif c < .9:
+            ops.append(['popAll']); k = 0
+        else:
+            ops.append(['printStack'])
+    return ops + [['printStack']]
+
+
+def stack_problem(pid, level, title, cls, prelude, code, empty_pop, desc, sample_ops, edges, wrong):
+    methods = [ST_M[m] for m in ('push', 'pop', 'top', 'isEmpty', 'popAll', 'printStack')]
+    if empty_pop:
+        methods[1] = ('pop', [], 'val', '맨 위 원소를 꺼내 돌려줍니다. 비어 있으면 `None`.')
+    full = (prelude + '\n\n' + code) if prelude else code
+    orc = lab_oracle(full, cls, methods)
+    return P(id=pid, unit='lab', sub='스택', level=level, title=title, kind='class', cls=cls, capture=True, prelude=prelude,
+             tmpl=lab_blank(code, ['push', 'pop', 'top', 'isEmpty', 'popAll', 'printStack']), init=[], methods=methods,
+             params=[('commands', 'ops', '명령 목록')], ret=('ops', '결과 목록'), goal='', desc=NOTE_LAB + '\n\n' + desc,
+             limits=['1 ≤ 명령의 수 ≤ 500', '넣는 값은 0 이상 99 이하의 정수'] + ([] if empty_pop else ['빈 스택에서 `pop`하는 명령은 주어지지 않습니다.']),
+             samples=[([ops], orc(ops), ex) for ops, ex in sample_ops], edges=[[e] for e in edges],
+             gen=lambda r: [[_labst_ops(r, r.randint(6, 18), empty_pop)] for _ in range(6)] + [[_labst_ops(r, 500, empty_pop)]],
+             oracle=lambda ops: orc(ops), sol=code, wrong=wrong)
+
+
+stack_problem('lab-liststack', 0, 'ListStack 구현 (코드 6-6)', 'ListStack', '', LS_SRC, False,
+              '''실습 파일 `listStack.py`(코드 6-6)의 `ListStack`은 파이썬 리스트 `__stack`의 **맨 끝을 스택의 top**으로 쓰는 스택입니다. 모든 메서드를 완성하세요.
+
+`printStack()`은 `Stack from top: `(콜론 뒤 공백 하나)을 출력한 뒤, 맨 위부터 바닥까지 값 뒤에 공백을 하나씩 붙여 한 줄에 출력합니다. 예) `Stack from top: 200 100 `''',
+              [([['push', 100], ['push', 200], ['top'], ['pop'], ['push', 7], ['printStack'], ['isEmpty']], '실습 데모(코드 6-7)와 같은 흐름입니다. 200을 꺼낸 뒤 7을 넣으면 위에서부터 7, 100입니다.'),
+               ([['top'], ['isEmpty'], ['printStack']], '빈 스택의 top은 `None`입니다.')],
+              [[['push', 1], ['popAll'], ['isEmpty'], ['top'], ['printStack']]],
+              [lab_bug(LS_SRC, 'return self.__stack.pop()', 'return self.__stack.pop(0)'),
+               lab_bug(LS_SRC, 'for i in range(len(self.__stack)-1, -1, -1):', 'for i in range(len(self.__stack)):')])
+
+stack_problem('lab-linkedstack', 1, 'LinkedStack 구현 (코드 6-13)', 'LinkedStack', LN + '\n\n' + LLB, LKS_SRC, True,
+              '''실습 파일 `linkedStack.py`(코드 6-13)의 `LinkedStack`은 연결 리스트 `LinkedListBasic`(코드 5-15, 완성된 코드가 위에 주어짐)을 안에 두고 **0번 원소를 top**으로 쓰는 스택입니다. 맨 앞에서 넣고 빼면 O(1)이기 때문입니다.
+
+모든 메서드를 완성하세요. `pop`은 `LinkedListBasic.pop(0)`을 그대로 돌려주므로 비어 있으면 `None`입니다. `printStack()`은 실습 코드처럼 `Stack from top:` 뒤에 **공백 없이** 값들을 맨 위부터 붙여 출력합니다. 예) `Stack from top:200100`''',
+              [([['push', 100], ['push', 200], ['top'], ['pop'], ['push', 7], ['printStack'], ['isEmpty']], '실습 데모(코드 6-14)와 같은 흐름입니다. 위에서부터 7, 100이 공백 없이 출력됩니다.'),
+               ([['pop'], ['top'], ['isEmpty']], '빈 스택에서 pop하면 `None`입니다.')],
+              [[['push', 5], ['push', 6], ['popAll'], ['pop'], ['push', 1], ['printStack']]],
+              [lab_bug(LKS_SRC, 'self.__list.insert(0, newItem)', 'self.__list.append(newItem)'),
+               lab_bug(LKS_SRC, 'return self.__list.get(0)', 'return self.__list.get(self.__list.size() - 1)')])
+
+# ---------------------------------------------------------------- 후위 표기식 (코드 6-16)
+PF_SRC = LAB.POSTFIX.rstrip()
+_pf_ns = {}
+exec(LAB.LISTSTACK + '\n' + LAB.POSTFIX, _pf_ns)
+
+
+def _labpf_gen(r, depth, big=False):
+    if depth == 0 or r.random() < .25:
+        return str(r.randint(0, 9) if r.random() < .5 else r.randint(10, 999 if not big else 99))
+    a, b = _labpf_gen(r, depth - 1, big), _labpf_gen(r, depth - 1, big)
+    op = r.choice('+-*/' if not big else '++--*/')
+    if _pf_ns['evaluate'](b) == 0:      # 실습 코드의 operation은 네 연산을 모두 계산 → 오른쪽 수가 0이면 + 에서도 오류
+        b = str(r.randint(1, 9))
+    sep = ' ' if r.random() < .85 else '  '
+    return a + sep + b + sep + op
+
+
+P(id='lab-postfix', unit='lab', sub='스택', level=1, title='후위 표기식 계산 evaluate (코드 6-16)',
+  params=[('p', 'str', '후위 표기식')], ret=('int', '계산 결과'), prelude=LAB.LISTSTACK.rstrip(),
+  tmpl=lab_blank(PF_SRC, ['evaluate']) + '\n\n\ndef solution(p):\n    return evaluate(p)\n',
+  goal='후위 표기식 `p`를 계산한 값을',
+  desc=NOTE_LAB + '''
+
+실습 파일 `postfix.py`(코드 6-16)의 `evaluate(p)`를 완성하세요. `ListStack`(코드 6-6), `isOperator`, `operation`은 주어집니다. 채점기는 `solution(p)`를 부르고, `solution`은 `evaluate(p)`를 돌려줍니다.
+
+- 피연산자는 0 이상의 정수이고 **여러 자리**일 수 있습니다. 수와 수 사이에는 공백이 있습니다.
+- 연산자는 `+`, `-`, `*`, `/`이고 `/`는 실습 코드처럼 몫(`//`)입니다.
+- 연산자를 만나면 스택에서 두 수를 꺼내 계산해 다시 넣습니다. **먼저 꺼낸 수가 오른쪽 피연산자**입니다 (`operation(opr2, opr1, ch)`).''',
+  limits=['1 ≤ `p`의 길이 ≤ 2,000', '항상 올바른 후위 표기식만 주어지며, 연산자의 오른쪽 피연산자가 0인 경우는 없습니다. (실습 코드의 `operation`은 딕셔너리를 만들면서 네 연산을 모두 미리 계산하기 때문에, 오른쪽 수가 0이면 `+`에서도 ZeroDivisionError가 나요.)'],
+  samples=[(['700 3 47 + 6 * - 4 /'], 100, '실습 코드의 예시입니다. 3 + 47 = 50, 50 × 6 = 300, 700 − 300 = 400, 400 // 4 = 100.'),
+           (['2 3 * 4 +'], 10, '2 × 3 = 6, 6 + 4 = 10.'),
+           (['8 3 -'], 5, '먼저 꺼낸 3이 오른쪽 피연산자라서 8 − 3 = 5입니다.')],
+  edges=[['42'], ['7 2 /'], ['2 7 /'], ['10  20 +'], ['1 2 3 4 + + +'], ['9 1 - 2 -']],
+  gen=lambda r: [[_labpf_gen(r, d)] for d in (2, 3, 3, 4, 5)] + [[_labpf_gen(r, 7, True)]],
+  oracle=lambda p: _pf_ns['evaluate'](p),
+  sol=PF_SRC + '\n\n\ndef solution(p):\n    return evaluate(p)\n',
+  wrong=[PF_SRC.replace("s.push(operation(s.pop(), s.pop(), ch))", "a = s.pop(); b = s.pop(); s.push(operation(b, a, ch))") + '\n\n\ndef solution(p):\n    return evaluate(p)\n',
+         PF_SRC.replace('''            if digitPreviously:
+                tmp = s.pop()
+                tmp = 10 * tmp + (ord(ch) - ord('0'))
+                s.push(tmp)
+            else:''', '''            if False:
+                pass
+            else:''') + '\n\n\ndef solution(p):\n    return evaluate(p)\n'])
+
+# ---------------------------------------------------------------- 재귀 + 연결 리스트
+P(id='rec-ll-len', unit='recursion', sub='재귀 + 연결 리스트', level=0, title='연결 리스트의 길이 (재귀)', rec=True,
+  params=[('head', 'linked', '연결 리스트의 첫 노드')], ret=('int', '노드의 개수'), prelude=SN,
+  goal='연결 리스트의 노드 개수를',
+  desc='''연결 리스트의 첫 노드 `head`가 주어집니다. 반복문 대신 **재귀**로 노드의 개수를 구해 보세요.
+
+- 빈 리스트(`None`)의 길이는 0입니다. (종료 조건)
+- 그렇지 않으면 “첫 노드 1개 + 나머지(`head.next`) 리스트의 길이”입니다.''',
+  limits=['0 ≤ 노드의 개수 ≤ 300'],
+  samples=[([[4, 8, 1]], 3, '노드가 3개입니다.'), ([[]], 0, '빈 리스트입니다.')],
+  edges=[[[7]], [[0, 0]], [list(range(300))]],
+  gen=lambda r: [[[r.randint(0, 99) for _ in range(r.randint(1, 60))]] for _ in range(6)],
+  oracle=lambda a: len(a),
+  sol='''def solution(head):
+    if head is None:                  # 종료 조건: 빈 리스트
+        return 0
+    return 1 + solution(head.next)    # 첫 노드 + 나머지의 길이
+''',
+  wrong=['''def solution(head):
+    if head.next is None:
+        return 1
+    return 1 + solution(head.next)
+'''])
+
+P(id='rec-ll-back', unit='recursion', sub='재귀 + 연결 리스트', level=1, title='연결 리스트를 거꾸로 읽기 (재귀)', rec=True,
+  params=[('head', 'linked', '연결 리스트의 첫 노드')], ret=('list', '거꾸로 읽은 값'), prelude=SN,
+  goal='노드의 값을 마지막 노드부터 거꾸로 담은 배열을',
+  desc='''연결 리스트의 첫 노드 `head`가 주어집니다. 리스트를 바꾸지 말고, **재귀**를 이용해 값을 마지막 노드부터 거꾸로 담은 배열을 만들어 보세요.
+
+“나머지 리스트(`head.next`)를 먼저 거꾸로 읽고, 그 뒤에 첫 노드의 값을 붙인다”고 생각하면 됩니다.''',
+  limits=['0 ≤ 노드의 개수 ≤ 300'],
+  samples=[([[1, 2, 3]], [3, 2, 1], '나머지 [2, 3]을 거꾸로 읽은 [3, 2] 뒤에 1을 붙입니다.'), ([[]], [], '빈 리스트이면 빈 배열입니다.')],
+  edges=[[[5]], [[1, 1, 2]], [list(range(300))]],
+  gen=lambda r: [[[r.randint(0, 99) for _ in range(r.randint(1, 60))]] for _ in range(6)],
+  oracle=lambda a: a[::-1],
+  sol='''def solution(head):
+    if head is None:                         # 종료 조건
+        return []
+    return solution(head.next) + [head.data] # 나머지를 거꾸로 + 첫 값
+''',
+  wrong=['''def solution(head):
+    if head is None:
+        return []
+    return [head.data] + solution(head.next)
 '''])

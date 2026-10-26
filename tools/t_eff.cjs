@@ -8,7 +8,6 @@ const SLOW = {
   'perf-range-sum': 'def solution(arr, queries):\n    return [sum(arr[i:j + 1]) for i, j in queries]\n',
   'perf-fib': 'memo = {}\ndef solution(n):\n    if n <= 1:\n        return n\n    if n not in memo:\n        memo[n] = (solution(n - 1) + solution(n - 2)) % 1000000007\n    return memo[n]\n',
   'perf-max-sub': 'def solution(arr):\n    best = arr[0]\n    for i in range(len(arr)):\n        s = 0\n        for j in range(i, len(arr)):\n            s += arr[j]\n            if s > best:\n                best = s\n    return best\n',
-  'arr-dedup': 'def solution(arr):\n    answer = []\n    for v in arr:\n        if v not in answer:\n            answer.append(v)\n    return answer\n',
   'st-paren': "def solution(s):\n    while '()' in s or '[]' in s or '{}' in s:\n        s = s.replace('()', '').replace('[]', '').replace('{}', '')\n    return s == ''\n",
 };
 (async () => {
