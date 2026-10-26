@@ -1,0 +1,5 @@
+shots/
+data/
+__pycache__/
+*.pyc
+*.log
