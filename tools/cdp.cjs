@@ -27,6 +27,8 @@ async function launch(opts = {}) {
     return r.result && r.result.result && r.result.result.value;
   };
   await cmd('Page.enable'); await cmd('Runtime.enable');
+  // 검사 중에는 방문 카운터를 올리지 않도록 막음
+  await cmd('Network.enable'); await cmd('Network.setBlockedURLs', { urls: ['*learningmate-lab.github.io/track.js*', '*abacus.jasoncameron.dev*'] });
   const api = {
     cmd, ev, logs,
     async size(w, h, mobile) { await cmd('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: 1, mobile: !!mobile }); },
