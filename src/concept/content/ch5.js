@@ -15,9 +15,10 @@ CV.chapter({
       viz: ['arr-ops'],
       points: ['`insert(i, x)` : i번부터 끝까지를 **뒤에서부터** 한 칸씩 오른쪽으로 밀어요 → (n − i)번 이동.', '`pop(i)` : i번 뒤의 원소들을 **앞에서부터** 한 칸씩 왼쪽으로 당겨요 → (n − 1 − i)번 이동.', '맨 끝에서 하는 `append(x)`, `pop()`은 아무것도 안 움직여서 **O(1)**, 맨 앞에서 하는 `insert(0, x)`, `pop(0)`은 **O(n)**이에요.', '대신 `a[i]` 읽기·쓰기는 위치 계산 한 번으로 끝나서 **O(1)**이에요.'],
       callouts: [
+        { t: 'exam', title: '시험 포인트 (필기)', text: '배열 리스트에서 i번에 넣을 때는 **뒤에서부터** 한 칸씩 민다: `for j in range(n - 1, i - 1, -1): a[j + 1] = a[j]` 후 `a[i] = x`. 앞에서부터 밀면 값이 덮어써져요. 최악(맨 앞) **O(n)**, 최선(맨 끝) **O(1)**.' },
         { t: 'tip', text: '극장 한 줄 좌석과 같아요. 가운데에 한 명이 끼어 앉으려면 그 오른쪽 사람들이 모두 한 칸씩 옮겨야 해요. 맨 끝 빈자리에 앉는 건 아무도 안 움직여요.' },
         { t: 'warn', text: '오른쪽으로 밀 때 앞에서부터 옮기면 `a[i+1] = a[i]`가 아직 안 옮긴 값을 **덮어써서** 같은 값이 복제돼요. 밀 때는 뒤에서부터, 당길 때는 앞에서부터!' },
-        { t: 'exam', text: '`arr-insert`, `arr-delete` 문제처럼 직접 밀고 당기는 코드를 쓰거나, 파이썬의 `insert`/`pop`을 쓰더라도 **반복문 안에서 `insert(0, x)`·`pop(0)`을 n번** 하면 O(n²)이 돼서 효율성 테스트에 걸려요.' },
+        { t: 'code', text: '`arr-insert`, `arr-delete` 문제처럼 직접 밀고 당기는 코드를 쓰거나, 파이썬의 `insert`/`pop`을 쓰더라도 **반복문 안에서 `insert(0, x)`·`pop(0)`을 n번** 하면 O(n²)이 돼서 효율성 테스트에 걸려요.' },
       ],
       quiz: [
         { q: '원소가 6개인 배열 리스트에서 `insert(2, x)`를 하면 원소를 몇 번 옮길까요?', opts: ['2번', '4번', '6번', '0번'], a: 1, ex: '2, 3, 4, 5번 원소 4개를 한 칸씩 오른쪽으로 밀어요. (n − i = 6 − 2 = 4)' },
@@ -41,7 +42,7 @@ CV.chapter({
       points: ['노드 = **item(값)** + **next(다음 노드를 가리키는 참조)**. 마지막 노드의 next는 `None`이에요 (그림의 빗금).', '첫 노드를 가리키는 **head**만 있으면 next를 따라 모든 노드에 닿아요. head를 잃으면 리스트 전체를 잃어요.', '실습 코드 `LinkedListBasic`(코드 5-15)은 맨 앞에 **더미 헤드** `__head`를 두고 원소 수를 `__numItems`에 세어요. 그래서 “맨 앞 삽입·삭제”도 중간과 같은 코드예요.'],
       callouts: [
         { t: 'tip', text: '보물찾기 쪽지와 같아요. 쪽지(노드)마다 “다음 쪽지는 ○○에 있음”이 적혀 있어서, **첫 쪽지 위치(head)**만 알면 끝까지 찾아갈 수 있어요.' },
-        { t: 'exam', text: '시험은 **실습 코드를 직접 짜는 문제**가 나올 가능성이 높아요. 이 사이트의 [실습 코드 구현](#/) 문제는 `ListNode`·`LinkedListBasic`을 그대로 써요. 한편 일반 연결 리스트 문제는 `Node(data)`(`.data`, `.next`)를 쓰고 더미 없이 **head를 직접** 넘겨줘요.' },
+        { t: 'exam', title: '시험 포인트 (필기)', text: '필기 시험에는 **실습 코드의 일부를 채우는 문제**가 나와요. `ListNode(item, next)`, 더미 헤드 `self.__head = ListNode(\'dummy\', None)`, `self.__numItems`, `__getNode(i)`(더미에서 **i + 1번** 이동)를 **안 보고 쓸 수 있게** 연습하세요. 이 사이트의 [실습 코드 구현](#/) 문제는 `ListNode`·`LinkedListBasic`을 그대로 써요. 한편 일반 연결 리스트 문제는 `Node(data)`(`.data`, `.next`)를 쓰고 더미 없이 **head를 직접** 넘겨줘요.' },
       ],
       quiz: [
         { q: '노드 3개짜리 리스트 10 → 20 → 30 에서 `head.next.next.item`의 값은?', opts: ['10', '20', '30', 'None'], a: 2, ex: 'head(10) → .next(20) → .next(30) 이니까 30이에요.' },
@@ -64,8 +65,9 @@ CV.chapter({
       viz: ['ll-insert', 'll-wrong'],
       points: ['① 앞 노드 **prev**(i−1번)를 찾고 ② `newNode.next = prev.next` ③ `prev.next = newNode`.', '**뒤를 먼저 잡고, 앞을 나중에!** 순서를 바꾸면 뒤쪽 노드를 모두 잃어버려요.', '노드를 옮기지 않으니 화살표 바꾸기는 O(1), 다만 prev를 찾는 데 O(i)가 걸려요. 맨 앞 삽입은 O(1)!'],
       callouts: [
+        { t: 'exam', title: '시험 포인트 (필기)', text: '`insert(i, newItem)` 순서: `prev = self.__getNode(i - 1)` → `newNode = ListNode(newItem, prev.next)` → `prev.next = newNode` → `self.__numItems += 1`. 새 노드가 **먼저** 뒤 노드를 가리켜야 해요(순서를 바꾸면 뒤쪽을 잃어버림). 유효 범위 **0 ≤ i ≤ numItems**.' },
         { t: 'warn', text: '`prev.next = newNode`를 먼저 쓰면 원래 `prev.next`가 덮어써져서 뒤쪽 노드에 닿을 방법이 사라져요. 채점에서는 값이 빠지거나 **무한 반복 → 시간 초과**로 나타나요.' },
-        { t: 'exam', text: '`ll-insert-at`, `ll-class-1`, `ll-class-2` 문제가 이 그림 그대로예요. 더미가 없으면 **i = 0일 때 head가 바뀌는 경우**를 따로 처리해야 해요 (아래 “head 다루기”).' },
+        { t: 'code', text: '`ll-insert-at`, `ll-class-1`, `ll-class-2` 문제가 이 그림 그대로예요. 더미가 없으면 **i = 0일 때 head가 바뀌는 경우**를 따로 처리해야 해요 (아래 “head 다루기”).' },
       ],
       quiz: [
         { q: '20(prev)과 30 사이에 새 노드를 넣을 때 **가장 먼저** 실행해야 하는 줄은?', opts: ['`prev.next = newNode`', '`newNode.next = prev.next`', '`prev = newNode`'], a: 1, ex: '새 노드가 30을 먼저 잡아야 prev.next를 바꿔도 30을 잃지 않아요.' },
@@ -77,8 +79,9 @@ CV.chapter({
       viz: ['ll-delete'],
       points: ['지울 노드의 **앞 노드(prev)**를 찾아 `prev.next = prev.next.next` (= `curr.next`) 한 줄이면 끝이에요.', '아무도 가리키지 않게 된 노드는 파이썬이 자동으로 치워요(가비지 컬렉션).', '값으로 지우는 `remove(x)`도 같아요. 다만 x를 찾을 때 **앞 노드를 함께 들고** 다녀야 해요.'],
       callouts: [
+        { t: 'exam', title: '시험 포인트 (필기)', text: '`pop(i)`: `prev = self.__getNode(i - 1)`, `curr = prev.next`, `prev.next = curr.next`, 개수 1 감소, `curr.item` 반환. 유효 범위 **0 ≤ i ≤ numItems − 1** (범위 밖이면 None). `index(x)`는 못 찾으면 **-2**를 돌려줘요(실습 코드).' },
         { t: 'warn', text: '지울 노드 자체(curr)만 잡고 있으면 앞 노드의 next를 바꿀 수 없어요. 단순 연결 리스트는 **뒤로 갈 수 없으니까요**. 그래서 `cur.next.data == x`처럼 **한 칸 앞에서** 확인하는 경우가 많아요.' },
-        { t: 'exam', text: '`ll-remove-all`(값이 x인 노드 모두 지우기)은 연속으로 지울 때 prev를 **옮기지 않아야** 하는 게 함정이에요. 지웠으면 prev는 그대로, 안 지웠으면 한 칸 이동!' },
+        { t: 'code', text: '`ll-remove-all`(값이 x인 노드 모두 지우기)은 연속으로 지울 때 prev를 **옮기지 않아야** 하는 게 함정이에요. 지웠으면 prev는 그대로, 안 지웠으면 한 칸 이동!' },
       ],
       quiz: [
         { q: '10 → 20 → 30 → 40 에서 prev가 20일 때 `prev.next = prev.next.next`를 실행하면?', opts: ['10 → 20 → 40', '10 → 30 → 40', '10 → 20 → 30'], a: 0, ex: '20의 next가 30을 건너뛰고 40이 돼요. 30이 빠졌어요.' },
@@ -98,7 +101,7 @@ CV.chapter({
       id: 'll-rev', title: '뒤집기: prev · curr · nxt 세 포인터', short: '뒤집기',
       viz: ['ll-reverse'],
       points: ['① `nxt = curr.next`로 **남은 쪽을 먼저 기억**하고 ② `curr.next = prev`로 화살표를 뒤집어요.', '③ prev와 curr를 한 칸씩 앞으로. curr가 None이 되면 **prev가 새 head**예요.', '노드마다 한 번씩만 보니 O(n), 새 노드를 만들지 않아요.'],
-      callouts: [{ t: 'exam', text: '`ll-reverse` 문제가 바로 이거예요. **return head**로 쓰면 원래 첫 노드(이제 맨 끝)만 돌려주게 돼서 길이 1짜리 리스트가 나와요. `return prev`!' }],
+      callouts: [{ t: 'code', text: '`ll-reverse` 문제가 바로 이거예요. **return head**로 쓰면 원래 첫 노드(이제 맨 끝)만 돌려주게 돼서 길이 1짜리 리스트가 나와요. `return prev`!' }],
       quiz: [
         { q: '뒤집기 반복문에서 `nxt = curr.next`를 빼고 `curr.next = prev` 다음에 `curr = curr.next`로 쓰면?', opts: ['정상 동작', 'curr가 뒤로(prev 쪽으로) 가 버린다', '오류 없이 원래 순서'], a: 1, ex: 'curr.next를 이미 prev로 바꿨으니 curr.next는 prev예요. 남은 쪽을 잃고 엉뚱한 곳으로 가요.' },
       ],
@@ -109,8 +112,9 @@ CV.chapter({
       points: ['마지막 노드의 next가 첫 노드를 가리켜요. **None이 없어요.**', '**tail**만 들고 있으면 맨 앞은 `tail.next`, 맨 뒤는 `tail` → 앞·뒤 삽입이 모두 O(1)이에요.', '한 바퀴 돌 때는 “시작 노드로 돌아오면 멈춤” 조건을 써요. `while cur != None`은 끝나지 않아요!', '요세푸스·돌아가며 처리하기(라운드 로빈)처럼 **빙글빙글 도는** 문제에 딱 맞아요.'],
       code: { title: '한 바퀴 돌기', src: 'cur = tail.next          # 맨 앞에서 시작\nwhile True:\n    print(cur.data)\n    cur = cur.next\n    if cur == tail.next:  # 처음으로 돌아오면\n        break' },
       callouts: [
+        { t: 'exam', title: '시험 포인트 (필기)', text: '실습 코드의 원형 연결 리스트는 **`self.__tail`만** 들고 있어요. 더미 헤드 = `tail.next`, 0번 노드 = `tail.next.next`. 그래서 `append`가 **O(1)**(tail 뒤에 붙이고 tail 이동). 맨 끝 삭제는 앞 노드를 찾아야 해서 O(n). 빈 리스트는 `tail.next == tail`(더미가 자기 자신을 가리킴).' },
         { t: 'tip', text: '둥근 식탁에 둘러앉은 사람들이에요. 끝자리가 없어서 계속 옆으로 돌 수 있고, “방금 앉은 사람(tail)”만 알면 그 옆이 첫 사람이에요.' },
-        { t: 'exam', text: '`cl-josephus`, `cl-roundrobin`은 노드를 빼려면 **빠질 노드의 앞 노드**를 들고 있어야 해요. 그래서 prev = tail에서 시작해요.' },
+        { t: 'code', text: '`cl-josephus`, `cl-roundrobin`은 노드를 빼려면 **빠질 노드의 앞 노드**를 들고 있어야 해요. 그래서 prev = tail에서 시작해요.' },
       ],
       quiz: [
         { q: '원형 연결 리스트에서 tail이 마지막 노드를 가리킬 때 첫 노드는?', opts: ['`tail.prev`', '`tail.next`', '`head.next`'], a: 1, ex: '마지막 노드의 next가 첫 노드라서 `tail.next`가 맨 앞이에요.' },
@@ -122,8 +126,9 @@ CV.chapter({
       viz: ['ll-doubly'],
       points: ['노드 = **prev | item | next**. 앞으로도 뒤로도 갈 수 있어요.', '넣을 때는 **4곳**(새 노드의 prev·next, 앞 노드의 next, 뒤 노드의 prev), 지울 때는 **2곳**을 고쳐요.', '지울 노드만 알면 앞 노드를 `curr.prev`로 바로 찾으니 삭제가 O(1)이에요. 대신 메모리를 더 쓰고 고칠 곳이 많아요.'],
       callouts: [
+        { t: 'exam', title: '시험 포인트 (필기)', text: '이중 연결 리스트 삭제 두 줄 `curr.prev.next = curr.next`, `curr.next.prev = curr.prev` / 삽입: `newNode = BidirectNode(newItem, prev, prev.next)` → `newNode.next.prev = newNode` → `prev.next = newNode`. 빈 리스트는 더미 하나가 **prev · next 모두 자기 자신**을 가리켜요.' },
         { t: 'warn', text: '실습 코드는 ③을 `newNode.next.prev = newNode`처럼 **새 노드를 기준으로** 써서 순서 실수에 강해요. 만약 `prev.next.prev = newNode`로 쓰면 반드시 ④(`prev.next = newNode`)보다 **먼저** 해야 해요. 그렇지 않으면 새 노드의 prev가 자기 자신을 가리켜요.' },
-        { t: 'exam', text: '`dl-browser`(뒤로/앞으로 가기), `dl-editor`(커서 이동)처럼 **양쪽으로 움직이는** 문제가 이중 연결 리스트예요. 실습 코드는 더미 노드를 두고 원형으로 이어서 맨 앞/맨 끝 예외를 없애요.' },
+        { t: 'code', text: '`dl-browser`(뒤로/앞으로 가기), `dl-editor`(커서 이동)처럼 **양쪽으로 움직이는** 문제가 이중 연결 리스트예요. 실습 코드는 더미 노드를 두고 원형으로 이어서 맨 앞/맨 끝 예외를 없애요.' },
       ],
       quiz: [
         { q: '이중 연결 리스트에서 curr를 지우는 두 줄로 알맞은 것은?', opts: ['`curr.prev.next = curr.next` / `curr.next.prev = curr.prev`', '`curr.next = curr.prev` / `curr.prev = curr.next`', '`curr.prev = None` / `curr.next = None`'], a: 0, ex: '앞 노드의 next와 뒤 노드의 prev가 curr를 건너뛰게 해야 해요.' },
@@ -144,6 +149,7 @@ CV.chapter({
         ],
       },
       points: ['**읽기가 많으면 배열 리스트**, **앞쪽 삽입·삭제가 많으면 연결 리스트**가 유리해요.', '파이썬의 `list`는 배열 리스트예요. 그래서 `list.insert(0, x)`, `list.pop(0)`이 느려요.'],
+      callouts: [{ t: 'exam', title: '시험 포인트 (필기)', text: '비용 비교표는 **그대로 외워** 두세요. 특히 실습 `LinkedListBasic.append`는 tail이 없어서 `__getNode`로 끝까지 가므로 **O(n)**, 원형 연결 리스트(`__tail` 있음)의 `append`는 **O(1)**이에요. “같은 리스트 ADT라도 구현에 따라 비용이 다르다”는 서술형도 자주 나와요.' }],
       quiz: [
         { q: '“i번째 값을 자주 읽고, 맨 끝에만 추가한다”면 어떤 구조가 알맞을까요?', opts: ['배열 리스트', '단순 연결 리스트', '둘 다 같다'], a: 0, ex: '읽기 O(1), 끝에 추가 평균 O(1)인 배열 리스트가 좋아요.' },
         { q: '“맨 앞에 넣고 빼는 일이 아주 많다”면?', opts: ['배열 리스트', '연결 리스트', '둘 다 O(n)'], a: 1, ex: '연결 리스트는 head 근처 화살표만 바꾸면 돼서 O(1)이에요. (Ch.6 스택을 연결 리스트로 만드는 이유)' },

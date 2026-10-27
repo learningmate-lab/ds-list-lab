@@ -1,4 +1,4 @@
-/* 러닝메이트 자료구조 코딩테스트 연습실 — 화면 */
+/* 러닝메이트 자료구조 중간고사 연습실 — 화면 (필기 연습은 written/written.js, 여기는 홈 · 코딩 연습 · 코딩 모의시험) */
 (function () {
   'use strict';
   var DS = window.DSL || {};
@@ -7,7 +7,7 @@
   PROBS.forEach(function (p, i) { BY[p.id] = p; p.idx = i; });
   var UNITS = D.units, UNIT = {};
   UNITS.forEach(function (u) { UNIT[u.id] = u; });
-  var EXAM_DATE = new Date(2026, 10, 3);         // 중간고사 2026-11-03 (프로그래머스)
+  var EXAM_DATE = new Date(2026, 10, 3);         // 중간고사 2026-11-03 (지필 · Closed Book, 프로그래머스 시험은 연기)
   var TL_RUN = 5000, TL_SUBMIT = 4000;            // 테스트 하나당 시간 제한(ms)
   var FMT_NAME = { func: '함수형', io: '입출력형' };
 
@@ -116,7 +116,7 @@
   };
   function pyStatusHTML() {
     var s = Runner.state;
-    var t = s === 'ready' ? 'Python 준비 완료' : s === 'error' ? 'Python을 불러오지 못함' : 'Python 준비 중…';
+    var t = s === 'ready' ? 'Python 준비 완료' : s === 'error' ? 'Python을 불러오지 못함' : s === 'idle' ? 'Python: 문제를 열면 준비' : 'Python 준비 중…';
     return '<span class="pystat ' + s + '"><i></i>' + t + '</span>';
   }
   Runner.on(function () { $$('.pystat').forEach(function (el) { el.outerHTML = pyStatusHTML(); }); });
@@ -142,6 +142,7 @@
     if (h[0] === 'p' && BY[h[1]]) return openPractice(BY[h[1]]);
     if (h[0] === 'exam') return h[1] === 'result' ? showExamResult() : openExam();
     if (h[0] === 'learn') return showLearn(h);
+    if (h[0] === 'w' && window.WX) return window.WX.route(h);
     showHome();
   }
 
@@ -185,25 +186,23 @@
 
   function showHome() {
     var el = mount('view home-view');
-    document.title = '러닝메이트 자료구조 코딩테스트 연습실';
+    document.title = '러닝메이트 자료구조 중간고사 연습실 (필기 · 코딩)';
     var solved = countBy(function (p) { return status(p.id) === 'ok'; });
     var lvls = [0, 1, 2].map(function (l) { var all = PROBS.filter(function (p) { return p.level === l; }); return { l: l, n: all.length, ok: all.filter(function (p) { return status(p.id) === 'ok'; }).length }; });
     var uc = function (u) { return countBy(function (p) { return p.unit === u; }); };
     var ex = LS.get('exam', null);
     var exLive = ex && !ex.done && Date.now() < ex.end;
+    var WXok = !!(window.WX && window.WX.homeHTML);
+    var nNote = WXok ? window.WX.noteCount(true) : 0;
     el.innerHTML =
-      '<header class="topbar"><div class="tb-in"><a class="brand" href="#/">' + (IMG.logo ? '<img src="' + IMG.logo + '" alt="">' : '') + '<b>러닝메이트</b><span class="sep">·</span><span class="t">자료구조 코딩테스트 연습실</span></a>' +
-      '<div class="tb-r">' + pyStatusHTML() + '<a class="btn sm" href="#/learn">📘 개념 정리</a></div></div></header>' +
-      '<main class="home">' +
-      '<section class="hero"><div>' +
-      '<p class="eyebrow">프로그래머스 시험 화면 그대로 · Python</p>' +
-      '<h1>자료구조 코딩테스트 연습실</h1>' +
-      '<p class="lead">실제 시험과 같은 배치의 화면에서 <b>코드 실행 → 제출 후 채점하기</b>까지 연습해요. 코드는 서버 없이 이 브라우저 안에서 바로 실행되고, 채점은 숨은 테스트 케이스로 해요.</p>' +
-      '<div class="dday"><b>' + ddayText() + '</b><span><strong>중간고사 11/3 (화) · 프로그래머스</strong>Ch.1 ~ Ch.6 (재귀 · 성능 · 파이썬 · 리스트 · 스택)</span></div>' +
-      '<div class="hero-cta"><button class="btn pri lg" data-act="exam">' + (exLive ? '진행 중인 모의시험 이어 하기' : '모의시험 보기 (4문제 · 90분)') + '</button><button class="btn lg" data-act="next">추천 순서로 풀기</button></div>' +
-      '</div>' + (IMG.mascot ? '<img class="mascot" src="' + IMG.mascot + '" alt="러닝메이트 마스코트">' : '') + '</section>' +
+      '<header class="topbar"><div class="tb-in"><a class="brand" href="#/">' + (IMG.logo ? '<img src="' + IMG.logo + '" alt="">' : '') + '<b>러닝메이트</b><span class="sep">·</span><span class="t">자료구조 중간고사 연습실</span></a>' +
+      '<div class="tb-r"><a class="btn sm" href="#/learn">📘 개념 정리</a>' + (WXok ? '<a class="btn sm tb-note" href="#/w/notes">📒 오답노트' + (nNote ? ' <span class="wcnt">' + nNote + '</span>' : '') + '</a>' : '') + '</div></div></header>' +
+      '<main class="home">' + (WXok ? window.WX.homeHTML(ddayText()) : '') +
+      '<section class="code-sec" id="coding"><div class="wsec-h"><h2>코딩 연습 <small>(프로그래머스 시험은 연기됨)</small></h2>' + pyStatusHTML() + '</div>' +
+      '<p class="code-note">중간고사는 필기 시험으로 바뀌었지만, 코드를 직접 짜 보면 <b>코드 빈칸 채우기</b>와 <b>코드 이해</b> 문제에 큰 도움이 돼요. 실제 코딩테스트와 같은 화면에서 Python 코드를 실행 · 채점해요. (처음 문제를 열 때 Python을 약 10MB 내려받아요)</p>' +
+      '<div class="code-cta"><button class="btn" data-act="exam">' + (exLive ? '진행 중인 코딩 모의시험 이어 하기' : '코딩 모의시험 (4문제 · 90분)') + '</button><button class="btn" data-act="next">추천 순서로 코딩 문제 풀기</button></div>' +
       '<section class="cards3">' +
-      '<div class="card"><h3>시험 범위 <small>중간고사</small></h3><ul class="scope">' +
+      '<div class="card"><h3>코딩 문제 범위 <small>' + PROBS.length + '문제</small></h3><ul class="scope">' +
       '<li class="lab"><a href="#/learn/ch5"><b>실습</b>실습 코드 직접 구현 (연결 리스트 · 스택)<em>' + uc('lab') + '문제</em></a></li>' +
       '<li><a href="#/learn/ch1"><b>Ch.1</b>강의 소개 · 자료구조 소개<em>개념</em></a></li>' +
       '<li><a href="#/learn/ch2"><b>Ch.2</b>재귀(자기 호출)와 귀납적 사고<em>재귀 ' + uc('recursion') + '문제</em></a></li>' +
@@ -211,7 +210,7 @@
       '<li><a href="#/learn/ch4"><b>Ch.4</b>파이썬 기초<em>' + uc('python') + '문제</em></a></li>' +
       '<li><a href="#/learn/ch5"><b>Ch.5</b>리스트 I · II (배열 구조 · 연결 리스트)<em>' + (uc('array') + uc('linked')) + '문제</em></a></li>' +
       '<li><a href="#/learn/ch6"><b>Ch.6</b>스택<em>' + uc('stack') + '문제</em></a></li></ul></div>' +
-      '<div class="card"><h3>풀이 형식 <small>시험 형식이 정해지면 맞춰서</small></h3><div class="seg" id="fmtseg"><button data-fmt="func">함수형</button><button data-fmt="io">입출력형</button></div><div class="fmt-ex" id="fmtex"></div></div>' +
+      '<div class="card"><h3>풀이 형식 <small>코딩 연습용</small></h3><div class="seg" id="fmtseg"><button data-fmt="func">함수형</button><button data-fmt="io">입출력형</button></div><div class="fmt-ex" id="fmtex"></div></div>' +
       '<div class="card"><h3>내 진도 <small>이 브라우저에 저장</small></h3><div class="big-num">' + solved + '<small> / ' + PROBS.length + ' 문제 해결</small></div><div class="lvbars" style="margin-top:10px">' +
       lvls.map(function (x) { return '<div class="lvbar"><b class="lv' + x.l + '">Lv. ' + x.l + '</b><div class="prog lv' + x.l + '"><i style="width:' + (x.n ? 100 * x.ok / x.n : 0) + '%"></i></div><span>' + x.ok + ' / ' + x.n + '</span></div>'; }).join('') +
       '</div></div></section>' +
@@ -221,9 +220,10 @@
       '<select id="f-unit" aria-label="단원"><option value="all">모든 단원</option>' + UNITS.map(function (u) { return '<option value="' + u.id + '">' + u.ch + ' ' + u.name + '</option>'; }).join('') + '</select>' +
       [0, 1, 2].map(function (l) { return '<button class="chip" data-lv="' + l + '">Lv. ' + l + '</button>'; }).join('') +
       '<select id="f-st" aria-label="상태"><option value="all">모든 상태</option><option value="ok">해결</option><option value="try">풀이 중</option><option value="no">안 푼 문제</option></select>' +
-      '<input id="f-q" type="search" placeholder="제목 검색" aria-label="제목 검색"></div></div><div id="plist"></div></section>' +
-      '<p class="foot">문제·테스트는 1학년 자료구조 수업 범위로 새로 만든 연습용이에요. 풀이 기록과 코드는 이 브라우저(localStorage)에만 저장돼요. 화면 배치는 실제 코딩테스트 화면에 익숙해지도록 비슷하게 만들었어요.</p>' +
+      '<input id="f-q" type="search" placeholder="제목 검색" aria-label="제목 검색"></div></div><div id="plist"></div></section></section>' +
+      '<p class="foot">필기 문제와 코딩 문제는 1학년 자료구조 수업 범위(강의 자료 · 교재 「쉽게 배우는 자료구조 with 파이썬」 · 실습 코드)로 새로 만든 연습용이에요. 코드 빈칸 문제의 정답 코드는 모두 파이썬으로 실제 실행해서 확인했어요. 풀이 기록 · 오답노트 · 코드는 이 브라우저(localStorage)에만 저장돼요.</p>' +
       '</main>';
+    if (WXok) window.WX.bindHome(el);
     // 형식
     function paintFmt() {
       $$('#fmtseg button', el).forEach(function (b) { b.classList.toggle('on', b.dataset.fmt === SET.fmt); });
@@ -235,9 +235,9 @@
     $$('#fmtseg button', el).forEach(function (b) { b.onclick = function () { SET.fmt = b.dataset.fmt; saveSet(); paintFmt(); paintList(); }; });
     // 필터
     $('#f-unit', el).value = HOME.unit; $('#f-st', el).value = HOME.st; $('#f-q', el).value = HOME.q;
-    function paintChips() { $$('.chip', el).forEach(function (c) { c.classList.toggle('on', HOME.lv.indexOf(+c.dataset.lv) >= 0); }); }
+    function paintChips() { $$('.chip[data-lv]', el).forEach(function (c) { c.classList.toggle('on', HOME.lv.indexOf(+c.dataset.lv) >= 0); }); }
     paintChips();
-    $$('.chip', el).forEach(function (c) {
+    $$('.chip[data-lv]', el).forEach(function (c) {
       c.onclick = function () { var l = +c.dataset.lv, i = HOME.lv.indexOf(l); if (i >= 0) HOME.lv.splice(i, 1); else HOME.lv.push(l); if (!HOME.lv.length) HOME.lv = [0, 1, 2]; saveHome(); paintChips(); paintList(); };
     });
     $('#f-unit', el).onchange = function () { HOME.unit = this.value; saveHome(); paintList(); };
@@ -351,18 +351,18 @@
     var exam = ctx.exam;
     var fmt = exam ? exam.fmt : SET.fmt;
     var el = mount('ide' + (exam ? ' exam-mode' : ''));
-    document.title = p.title + ' - ' + (exam ? '모의시험' : '자료구조 코딩테스트 연습실');
+    document.title = p.title + ' - ' + (exam ? '코딩 모의시험' : '자료구조 코딩 연습');
     var I = { p: p, fmt: fmt, running: false, abort: false };
     var unit = UNIT[p.unit];
     var top;
     if (exam) {
-      top = '<header class="ide-top"><span class="ex-title">자료구조 모의시험</span><div class="ex-tabs">' +
+      top = '<header class="ide-top"><span class="ex-title">자료구조 코딩 모의시험</span><div class="ex-tabs">' +
         exam.pids.map(function (id, i) {
           var q = BY[id], sub = exam.sub[id], saved = LS.get('excode.' + exam.id + '.' + id, null) != null;
           return '<button class="ex-tab' + (id === p.id ? ' on' : '') + (sub ? ' sub' : saved ? ' saved' : '') + '" data-go="' + i + '" title="' + esc(q.title) + '"><span class="d"></span>' + (i + 1) + '번 <small class="lv' + q.level + '" style="color:' + ['#6ee7b7', '#7cc4ff', '#ff8fa3'][q.level] + '">Lv.' + q.level + '</small></button>';
         }).join('') + '</div><div class="top-r"><span class="lvb">' + FMT_NAME[fmt] + '</span><select class="lang" aria-label="언어"><option>Python3</option></select><span class="timer" id="timer">--:--:--</span><button class="pbtn ghost" data-act="end" style="height:34px">시험 종료</button></div></header>';
     } else {
-      top = '<header class="ide-top"><nav class="crumb"><a class="home-ic" href="#/" title="문제 목록">' + ICON.home + '</a><a href="#/">자료구조 코딩테스트</a><span class="gt c-mid">›</span><a class="c-mid" href="#/" data-unit="' + p.unit + '">' + esc(unit.name) + '</a>' +
+      top = '<header class="ide-top"><nav class="crumb"><a class="home-ic" href="#/" title="문제 목록">' + ICON.home + '</a><a href="#/">자료구조 코딩 연습</a><span class="gt c-mid">›</span><a class="c-mid" href="#/" data-unit="' + p.unit + '">' + esc(unit.name) + '</a>' +
         (p.sub ? '<span class="gt c-mid">›</span><a class="c-mid" href="#/" data-unit="' + p.unit + '">' + esc(p.sub) + '</a>' : '') + '<span class="gt">›</span><b>' + esc(p.title) + '</b><span class="lvb l' + p.level + '">Lv. ' + p.level + '</span></nav>' +
         '<div class="top-r"><div class="fmt-seg" role="group" aria-label="풀이 형식"><button data-fmt="func">함수형</button><button data-fmt="io">입출력형</button></div><select class="lang" aria-label="언어"><option>Python3</option></select><button class="ic-btn" data-act="settings" title="설정" aria-label="설정">' + ICON.gear + '</button></div></header>';
     }
@@ -724,8 +724,8 @@
     var o = { n: 4, min: 90, fmt: SET.fmt, show: false, units: UNITS.map(function (u) { return u.id; }) };
     function grp(id, list, cur) { return '<div class="opts-grid" id="' + id + '">' + list.map(function (x) { return '<button class="opt-btn' + (x[0] === cur ? ' on' : '') + '" data-v="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>'; }
     modal({
-      title: '모의시험 설정', cls: 'wide',
-      body: '<p class="mnote" style="margin-top:0">시험은 <b>실습 때 만든 자료구조를 직접 구현</b>하는 문제가 중심일 가능성이 높아서 그렇게 섞어서 출제해요. 4문제 = <b>실습 코드 구현 2</b> + 연결 리스트·스택 응용 1 + 재귀·성능 1 (3문제 = 실습 2 + 응용 1, 5문제 = 실습 3 + 응용 1 + 재귀·성능 1). 문제마다 정확성(+효율성) 100점, 문제 수로 나눠 100점 만점으로 환산해요.</p>' +
+      title: '코딩 모의시험 설정', cls: 'wide',
+      body: '<p class="mnote" style="margin-top:0;color:#c4243f;font-weight:700">프로그래머스 코딩 시험은 연기됐어요. 중간고사는 지필(필기) 시험이에요 — 이 코딩 모의시험은 코드 작성 연습용이에요.</p><p class="mnote">시험은 <b>실습 때 만든 자료구조를 직접 구현</b>하는 문제가 중심일 가능성이 높아서 그렇게 섞어서 출제해요. 4문제 = <b>실습 코드 구현 2</b> + 연결 리스트·스택 응용 1 + 재귀·성능 1 (3문제 = 실습 2 + 응용 1, 5문제 = 실습 3 + 응용 1 + 재귀·성능 1). 문제마다 정확성(+효율성) 100점, 문제 수로 나눠 100점 만점으로 환산해요.</p>' +
         '<div class="form-row"><label>문제 수</label>' + grp('o-n', [[3, '3문제'], [4, '4문제'], [5, '5문제']], o.n) + '</div>' +
         '<div class="form-row"><label>시험 시간</label>' + grp('o-min', [[60, '60분'], [90, '90분'], [120, '120분']], o.min) + '</div>' +
         '<div class="form-row"><label>풀이 형식<small>시험 중에는 바꿀 수 없어요</small></label>' + grp('o-fmt', [['func', '함수형'], ['io', '입출력형']], o.fmt) + '</div>' +
@@ -782,7 +782,7 @@
     var ex = LS.get('exam', null);
     if (!ex || !ex.done) { go(ex ? '#/exam' : '#/'); return; }
     var el = mount('view home-view');
-    document.title = '모의시험 결과 - 자료구조 코딩테스트 연습실';
+    document.title = '코딩 모의시험 결과 - 자료구조 중간고사 연습실';
     var per = 100 / ex.pids.length, total = 0;
     var rows = ex.pids.map(function (id, i) {
       var p = BY[id], s = ex.sub[id], pts = s ? s.score * per / 100 : 0; total += pts;
@@ -792,8 +792,8 @@
     }).join('');
     total = Math.round(total * 10) / 10;
     var used = Math.round(((ex.finishedAt || Date.now()) - ex.start) / 60000);
-    el.innerHTML = '<header class="topbar"><div class="tb-in"><a class="brand" href="#/">' + (IMG.logo ? '<img src="' + IMG.logo + '" alt="">' : '') + '<b>러닝메이트</b><span class="sep">·</span><span class="t">모의시험 결과</span></a><div class="tb-r"><a class="btn sm" href="#/">문제 목록</a></div></div></header>' +
-      '<main class="rep"><section class="rep-hero"><div><h1>모의시험 결과</h1><p style="margin:4px 0 0;color:var(--mut)">' + ex.pids.length + '문제 · ' + ex.min + '분 중 ' + used + '분 사용 · ' + FMT_NAME[ex.fmt] + (ex.auto ? ' · 시간 종료' : '') + '</p>' +
+    el.innerHTML = '<header class="topbar"><div class="tb-in"><a class="brand" href="#/">' + (IMG.logo ? '<img src="' + IMG.logo + '" alt="">' : '') + '<b>러닝메이트</b><span class="sep">·</span><span class="t">코딩 모의시험 결과</span></a><div class="tb-r"><a class="btn sm" href="#/">문제 목록</a></div></div></header>' +
+      '<main class="rep"><section class="rep-hero"><div><h1>코딩 모의시험 결과</h1><p style="margin:4px 0 0;color:var(--mut)">' + ex.pids.length + '문제 · ' + ex.min + '분 중 ' + used + '분 사용 · ' + FMT_NAME[ex.fmt] + (ex.auto ? ' · 시간 종료' : '') + '</p>' +
       '<div class="rep-total">' + fx(total) + '<span> / 100</span></div><p style="margin:6px 0 0">' + (total >= 80 ? '아주 좋아요! 틀린 문제의 해설만 확인하면 돼요.' : total >= 50 ? '좋아요. 놓친 문제를 연습 모드에서 다시 풀어 보세요.' : '괜찮아요. Lv.0 → Lv.1 순서로 차근차근 다시 연습해 봐요.') + '</p></div>' + (IMG.mascot ? '<img src="' + IMG.mascot + '" alt="">' : '') + '</section>' +
       '<table class="plist"><thead><tr><th class="no">번호</th><th>문제</th><th class="unit-h">단원</th><th>난이도</th><th class="sc">문제 점수</th><th class="sc">환산 점수</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>' +
       '<div class="hero-cta"><button class="btn pri lg" id="again">새 모의시험</button><a class="btn lg" href="#/">문제 목록으로</a></div>' +
@@ -815,13 +815,21 @@
     window.CV.show(el, parts, {
       PROBS: PROBS, UNIT: UNIT, UNITS: UNITS, IMG: IMG, LS: LS, track: track, status: status, go: go,
       onCleanup: function (f) { cleanup.push(f); },
+      written: window.WX ? { count: window.WX.countCh, start: window.WX.startChapter } : null,
       openUnit: function (u) { HOME.unit = u; HOME.tab = 'unit'; HOME.lv = [0, 1, 2]; HOME.st = 'all'; HOME.q = ''; saveHome(); go('#/'); setTimeout(function () { var l = document.getElementById('plist'); if (l) l.scrollIntoView({ block: 'start' }); }, 60); },
     });
   }
 
   // ------------------------------------------------------------------ 시작
+  if (window.WX) window.WX.init({
+    mount: mount, go: go, modal: modal, toast: toast, LS: LS, track: track, IMG: IMG, hms: hms,
+    setKey: function (f) { keyHandler = f; }, onCleanup: function (f) { cleanup.push(f); }, modalOpen: function () { return !!modalEl; },
+  });
   window.addEventListener('hashchange', route);
   window.DSL.app = { Runner: Runner, route: route, PROBS: PROBS };
   route();
-  setTimeout(function () { Runner.ensure().catch(function () { }); }, 300);   // 첫 화면에서 미리 불러오기
+  // Python(약 10MB)은 코딩 화면에서만 미리 불러옴 — 필기 연습만 하는 학생은 내려받지 않음
+  function preload() { if (/^#\/?(p|exam)\b/.test(location.hash) && Runner.state === 'idle') Runner.ensure().catch(function () { }); }
+  window.addEventListener('hashchange', preload);
+  setTimeout(preload, 300);
 })();

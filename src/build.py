@@ -490,6 +490,8 @@ def main():
         print('%-14s' % n + ''.join('%8d' % c[(l, u)] for l in (0, 1, 2)) + '%6d' % sum(c[(l, u)] for l in (0, 1, 2)))
     print('%-14s' % '합' + ''.join('%8d' % sum(v for (l, u), v in c.items() if l == lv) for lv in (0, 1, 2)))
     data = {'units': [{'id': u, 'name': n, 'ch': ch} for u, n, ch in PR.UNITS], 'levels': {str(k): v for k, v in PR.LEVELS.items()}, 'problems': out}
+    from written import bank as WB   # 필기 문제 은행: 검증(코드 빈칸은 파이썬으로 실제 실행) 후 함께 넣음
+    data['written'] = WB.load()
     (H.parent / 'data').mkdir(exist_ok=True)
     (H.parent / 'data' / 'problems.json').write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding='utf-8')
     return data

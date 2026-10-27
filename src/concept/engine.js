@@ -420,6 +420,7 @@
     warn: ['⚠️', '자주 틀리는 것'],
     exam: ['📝', '시험 포인트'],
     info: ['🔎', '더 알아보기'],
+    code: ['💻', '코딩 연습 포인트'],
   };
   // 단원의 문제: units 항목 'linked' = 그 단원 전체, 'lab/스택' = lab 단원 중 소주제(sub)가 '스택'인 것
   function inUnits(c, p) {
@@ -445,7 +446,7 @@
     return { seen: seen, n: c.sections.length, q: q, qok: qok, pct: tot ? Math.round(100 * (seen + qok) / tot) : 0 };
   }
   function topbar(ctx, sub, right) {
-    return '<header class="topbar"><div class="tb-in"><div class="brand"><a class="brand-a" href="#/">' + (ctx.IMG.logo ? '<img src="' + ctx.IMG.logo + '" alt="">' : '') + '<b>러닝메이트</b></a><span class="sep">·</span><span class="t">' + sub + '</span></div><div class="tb-r">' + (right || '') + '<a class="btn sm" href="#/">문제 목록</a></div></div></header>';
+    return '<header class="topbar"><div class="tb-in"><div class="brand"><a class="brand-a" href="#/">' + (ctx.IMG.logo ? '<img src="' + ctx.IMG.logo + '" alt="">' : '') + '<b>러닝메이트</b></a><span class="sep">·</span><span class="t">' + sub + '</span></div><div class="tb-r">' + (right || '') + '<a class="btn sm" href="#/">처음으로</a></div></div></header>';
   }
 
   CV.show = function (el, parts, ctx) {
@@ -459,14 +460,14 @@
   };
 
   function showHome(el, ctx) {
-    document.title = '개념 정리 - 자료구조 코딩테스트 연습실';
+    document.title = '개념 정리 - 자료구조 중간고사 연습실';
     var stats = CV.chapters.map(function (c) { return chapStat(ctx, c); });
     var all = stats.reduce(function (a, s) { return a + s.pct; }, 0) / Math.max(1, stats.length);
     var last = ctx.LS.get('concept.last', null);
     el.innerHTML = topbar(ctx, '개념 정리') +
       '<main class="cvh">' +
       '<section class="cvh-hero"><div><p class="eyebrow">중간고사 범위 Ch.1 ~ Ch.6 · 그림으로 보는 자료구조</p><h1>개념 정리</h1>' +
-      '<p class="lead">단원마다 <b>움직이는 그림</b>을 한 단계씩 넘겨 보고, 핵심 정리 → 시험 포인트 → <b>개념 체크</b> 순서로 확인해요. 다 보면 그 단원 문제를 바로 풀러 갈 수 있어요.</p>' +
+      '<p class="lead">단원마다 <b>움직이는 그림</b>을 한 단계씩 넘겨 보고, 핵심 정리 → 시험 포인트 → <b>개념 체크</b> 순서로 확인해요. 📝 <b>시험 포인트</b>는 필기 시험(지필 · Closed Book) 기준이고, 💻 코딩 연습 포인트는 코딩 문제용이에요. 다 보면 그 단원 <b>필기 문제</b>와 코딩 문제를 바로 풀러 갈 수 있어요.</p>' +
       '<div class="cvh-prog"><div class="ring" style="--p:' + all + '"><span>' + Math.round(all) + '<small>%</small></span></div><div><b>전체 진도</b><span>그림을 본 섹션 + 맞힌 개념 체크 기준</span>' +
       (last && CV.chapters.some(function (c) { return c.id === last; }) ? '<a class="btn sm pri" href="#/learn/' + last + '">이어서 보기 →</a>' : '<a class="btn sm pri" href="#/learn/' + CV.chapters[0].id + '">Ch.1부터 시작 →</a>') + '</div></div>' +
       '</div>' + (ctx.IMG.mascot ? '<img class="mascot" src="' + ctx.IMG.mascot + '" alt="">' : '') + '</section>' +
@@ -540,6 +541,11 @@
       CV.$('#pr-unit', pr).onclick = function () { ctx.openUnit(c.units[0].split('/')[0]); };
     } else {
       pr.innerHTML = '<div class="pr-h"><div><span class="pr-ic">▶</span><h2>이 단원 문제 풀러 가기</h2><p>Ch.' + c.no + '은 개념 단원이라 따로 코딩 문제가 없어요. 여기서 익힌 “자료구조 = 데이터를 담는 방법 + 연산” 관점으로 다음 단원 문제를 풀어 보세요.</p></div><a class="btn pri" href="#/learn/' + (nextC ? nextC.id : '') + '">다음 단원 보기</a></div>';
+    }
+    // 필기 문제 (시험 형식) — 맨 위에
+    if (ctx.written && ctx.written.count(c.no)) {
+      pr.insertAdjacentHTML('afterbegin', '<div class="pr-w"><div><span class="pr-ic">✍️</span><h2>이 단원 필기 문제 (시험 형식)</h2><p>객관식 · 단답형 · 짧은 서술형 · 코드 빈칸 ' + ctx.written.count(c.no) + '문항 · 바로 채점 · 오답노트</p></div><button class="btn pri" id="pr-w">필기 문제 풀기</button></div>');
+      CV.$('#pr-w', pr).onclick = function () { ctx.written.start(c.no); };
     }
     // 목차: 클릭 시 스크롤 · 보이는 섹션 표시 · 읽음 기록
     var view = el;

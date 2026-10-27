@@ -91,6 +91,11 @@
 .co-warn { background: #fff3f5; border-color: #f6cbd5; } .co-warn .co-h { color: var(--red); }
 .co-exam { background: #fff8e6; border-color: #f3dc9f; } .co-exam .co-h { color: #9a6200; }
 .co-info { background: #f4f2fb; border-color: #dcd5f1; } .co-info .co-h { color: #5b3fa6; }
+.co-code { background: #f3f5f7; border-color: #d9dfe4; } .co-code .co-h { color: #44576c; }
+.pr-w { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; background: #fff8e6; border: 1px solid #f3dc9f; border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; }
+.pr-w > div { display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-items: center; min-width: 0; }
+.pr-w h2 { margin: 0; font-size: 17px; }
+.pr-w p { grid-column: 2; margin: 2px 0 0; color: var(--mut); font-size: 13.5px; }
 .cvs-code { margin-top: 14px; }
 .code-note { margin: 6px 2px 0; font-size: 13px; color: var(--mut); }
 .cv-code { background: #1e2b3a; border-radius: 10px; overflow: hidden; }

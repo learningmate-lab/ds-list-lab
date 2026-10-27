@@ -14,6 +14,7 @@ const SLOW = {
   const b = await launch();
   try {
     await b.goto(URL + '#/');
+    await b.ev('DSL.app.Runner.ensure().catch(function () {}), 1');   // 홈에서는 Python을 미리 불러오지 않으므로 직접 시작
     await b.waitFor('DSL.app.Runner.state === "ready"', 120000);
     for (const id of Object.keys(SLOW)) {
       for (const [label, codeExpr] of [['ref', `p.ref.func`], ['slow', JSON.stringify(SLOW[id])]]) {

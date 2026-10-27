@@ -9,6 +9,7 @@ require('fs').mkdirSync(OUT, { recursive: true });
   try {
     await b.size(1440, 900);
     await b.goto(URL + '#/');
+    await b.ev('DSL.app.Runner.ensure().catch(function () {}), 1');   // 홈에서는 Python을 미리 불러오지 않으므로 직접 시작
     const t0 = Date.now();
     await b.waitFor('DSL.app.Runner.state === "ready" || DSL.app.Runner.state === "error"', 180000);
     console.log('runner', await b.ev('DSL.app.Runner.state + " " + DSL.app.Runner.err'), ((Date.now() - t0) / 1000).toFixed(1) + 's');
