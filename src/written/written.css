@@ -29,10 +29,6 @@
 .wf-go { display: flex; align-items: center; justify-content: flex-end; gap: 12px; padding-top: 12px; }
 .wf-go span { color: var(--mut); font-size: 14px; }
 .wf-go b { color: var(--fg); font-size: 18px; }
-.code-sec { margin-top: 40px; padding-top: 22px; border-top: 2px solid var(--line); }
-.code-sec .wsec-h h2 small { font-size: 13px; color: var(--mut); font-weight: 600; margin-left: 4px; }
-.code-note { margin: 0 0 12px; color: var(--mut); font-size: 14px; }
-.code-cta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 4px; }
 
 /* 연습 · 시험 공통 */
 .wx-view { background: var(--bg); }

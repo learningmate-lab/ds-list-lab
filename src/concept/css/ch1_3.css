@@ -86,7 +86,7 @@
 .c3-leg i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
 .c3-fx { font: 700 16px var(--mono); margin: 0 0 4px; }
 .c3-say { margin: 10px 0 0; font-size: 14.5px; }
-/* 효율성 계산기 */
+/* 복잡도 → 실행 시간 계산기 */
 .c3-probs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
 .c3-probs button { flex: none; border: 1.5px solid var(--line); background: #fff; border-radius: 10px; padding: 6px 11px; cursor: pointer; font: 700 13px var(--ui); color: #3d4245; text-align: left; line-height: 1.35; }
 .c3-probs button small { display: block; font: 500 11.5px var(--mono); color: var(--mut); }

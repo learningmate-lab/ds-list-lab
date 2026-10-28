@@ -91,7 +91,7 @@
 .co-warn { background: #fff3f5; border-color: #f6cbd5; } .co-warn .co-h { color: var(--red); }
 .co-exam { background: #fff8e6; border-color: #f3dc9f; } .co-exam .co-h { color: #9a6200; }
 .co-info { background: #f4f2fb; border-color: #dcd5f1; } .co-info .co-h { color: #5b3fa6; }
-.co-code { background: #f3f5f7; border-color: #d9dfe4; } .co-code .co-h { color: #44576c; }
+.co-fill { background: #ecf7f1; border-color: #c4e3d2; } .co-fill .co-h { color: #236c50; }
 .pr-w { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; background: #fff8e6; border: 1px solid #f3dc9f; border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; }
 .pr-w > div { display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-items: center; min-width: 0; }
 .pr-w h2 { margin: 0; font-size: 17px; }
@@ -135,23 +135,13 @@
 .qz-ex b.ok { color: var(--ok); } .qz-ex b.no { color: var(--red); }
 .qz-re { border: 0; background: none; color: var(--mut); text-decoration: underline; cursor: pointer; font-size: 12.5px; margin-left: 6px; }
 
-/* 문제 풀러 가기 */
+/* 이 단원 필기 문제 풀기 */
 .cvs.practice { border: 2px solid color-mix(in srgb, var(--red) 35%, #fff); background: linear-gradient(180deg, #fff 0%, #fff7f9 100%); }
 .pr-h { display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap; }
 .pr-h > div { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: center; }
 .pr-h h2 { margin: 0; font-size: 20px; }
 .pr-h p { grid-column: 2; margin: 2px 0 0; color: var(--mut); font-size: 14px; }
 .pr-ic { grid-row: span 2; width: 40px; height: 40px; border-radius: 12px; background: var(--red); color: #fff; display: grid; place-items: center; font-size: 16px; }
-.pr-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; margin-top: 14px; }
-.pr-it { display: flex; align-items: center; gap: 8px; padding: 9px 12px; background: #fff; border: 1px solid var(--line); border-radius: 10px; color: var(--fg); text-decoration: none; font-size: 14px; min-width: 0; }
-.pr-it:hover { border-color: var(--pri); }
-.pr-it b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pr-it small { color: var(--mut); font-size: 11.5px; margin-left: auto; white-space: nowrap; }
-.pr-it .lv { font-size: 11.5px; font-weight: 800; flex: none; }
-.pr-it .lv0 { color: var(--l0); } .pr-it .lv1 { color: var(--l1); } .pr-it .lv2 { color: var(--l2); }
-.pr-it .st { width: 10px; height: 10px; border-radius: 50%; border: 2px solid #c9ced0; flex: none; }
-.pr-it .st.ok { background: var(--l0); border-color: var(--l0); }
-.pr-it .st.try { border-color: #f0a500; background: #fff0cc; }
 .cvp-nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
 
 /* ======================= 플레이어 */
@@ -336,7 +326,5 @@
   .qz { padding: 12px 12px 4px; }
   .cv-code pre { font-size: 12.5px; }
   .pl-code { font-size: 12.5px; }
-  .pr-list { grid-template-columns: 1fr; }
   .tb-in .crumb-a { display: none; }
 }
-.pr-it .labtag { font-style: normal; font-size: 11px; font-weight: 800; color: #fff; background: var(--red); border-radius: 5px; padding: 0 5px; flex: none; }

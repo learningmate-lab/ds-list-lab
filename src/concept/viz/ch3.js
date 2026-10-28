@@ -1,4 +1,4 @@
-/* Ch.3 알고리즘의 성능 — 그림 (반복 횟수 세기 · 증가 속도 그래프 · 규칙 · 최선/최악 · list vs set · 효율성 테스트) */
+/* Ch.3 알고리즘의 성능 — 그림 (반복 횟수 세기 · 증가 속도 그래프 · 규칙 · 최선/최악 · list vs set · 복잡도와 실행 시간) */
 (function () {
   'use strict';
   var CV = window.CV, esc = CV.esc;
@@ -339,7 +339,7 @@
     load();
   });
 
-  // ------------------------------------------------------------------ 효율성 테스트 계산기
+  // ------------------------------------------------------------------ 복잡도 → 실행 시간 어림 계산기
   var PROB = [
     { id: 'perf-dup', t: '같은 수가 있나요', tl: 2, slow: ['모든 쌍 비교', 'O(n²)', function (L) { return 2 * L - Math.log10(2); }], fast: ['set에 기록', 'O(n)', function (L) { return L; }] },
     { id: 'perf-two-sum', t: '합이 target인 두 수', tl: 2, slow: ['두 수 쌍 전부', 'O(n²)', function (L) { return 2 * L - Math.log10(2); }], fast: ['set으로 짝 찾기', 'O(n)', function (L) { return L; }] },
@@ -350,8 +350,8 @@
   CV.c3.PROB = PROB;
   CV.def('c3-eff', function (host) {
     var LO = -4, HI = 6;   // 그래프 눈금: 10⁻⁴초 ~ 10⁶초 (로그)
-    var el = CV.node('<div class="c3-box c3-eff"><div class="c3-probs scrollx" role="tablist">' + PROB.map(function (p, i) { return '<button data-i="' + i + '"><span>' + esc(p.t) + '</span><small>' + p.id + '</small></button>'; }).join('') + '</div>' +
-      '<div class="c3-ctl" style="margin-top:12px"><label for="c3en">입력 크기 n</label><input id="c3en" type="range" min="100" max="500" value="500"><span class="c3-nval"></span><div class="c3-chips"><button data-v="300">정확성 1,000</button><button data-v="500">효율성 100,000</button></div></div>' +
+    var el = CV.node('<div class="c3-box c3-eff"><div class="c3-probs scrollx" role="tablist">' + PROB.map(function (p, i) { return '<button data-i="' + i + '"><span>' + esc(p.t) + '</span><small>' + p.slow[1] + ' → ' + p.fast[1] + '</small></button>'; }).join('') + '</div>' +
+      '<div class="c3-ctl" style="margin-top:12px"><label for="c3en">입력 크기 n</label><input id="c3en" type="range" min="100" max="500" value="500"><span class="c3-nval"></span><div class="c3-chips"><button data-v="300">n = 1,000</button><button data-v="500">n = 100,000</button></div></div>' +
       '<div class="c3-race"></div><div class="c3-verdict"></div><p class="c3-scale">막대 길이는 <b>로그 눈금</b>(한 칸마다 10배)이에요. 1초에 약 1,000만 번 연산한다고 본 어림값이에요.</p></div>');
     host.appendChild(el);
     var pi = 0, race = CV.$('.c3-race', el), ver = CV.$('.c3-verdict', el), rng = CV.$('#c3en', el);
@@ -367,9 +367,9 @@
       });
       var lim = pos(Math.log10(p.tl));
       race.innerHTML = rows.map(function (r) {
-        return '<div class="c3-rr"><div><b>' + esc(r.name) + '</b><small>' + r.big + ' · 약 ' + numL(r.oL) + '번</small></div><div class="c3-bt ' + r.cls + '"><i style="width:' + Math.max(1.5, r.w) + '%"></i><span class="' + (r.w < 30 ? 'c3-out' : '') + '" style="' + (r.w < 30 ? 'left:calc(' + Math.max(1.5, r.w) + '% + 8px)' : '') + '">' + timeL(r.Ls) + (r.Ls > HI ? ' ▶' : '') + '</span><div class="c3-lim" style="left:' + lim + '%"><b>제한 ' + p.tl + '초</b></div></div></div>';
+        return '<div class="c3-rr"><div><b>' + esc(r.name) + '</b><small>' + r.big + ' · 약 ' + numL(r.oL) + '번</small></div><div class="c3-bt ' + r.cls + '"><i style="width:' + Math.max(1.5, r.w) + '%"></i><span class="' + (r.w < 30 ? 'c3-out' : '') + '" style="' + (r.w < 30 ? 'left:calc(' + Math.max(1.5, r.w) + '% + 8px)' : '') + '">' + timeL(r.Ls) + (r.Ls > HI ? ' ▶' : '') + '</span><div class="c3-lim" style="left:' + lim + '%"><b>기준 ' + p.tl + '초</b></div></div></div>';
       }).join('');
-      ver.innerHTML = rows.map(function (r) { return '<div class="' + (r.over ? 'no' : 'yes') + '" data-r="' + r.cls + '">' + (r.over ? '❌ ' : '✅ ') + '<b>' + r.big + '</b> ' + esc(r.name) + ' → ' + (r.over ? '<b>시간 초과</b>' : '<b>통과</b>') + ' (' + timeL(r.Ls) + ')</div>'; }).join('') + (p.note ? '<p class="c3-scale" style="flex-basis:100%;margin:0">' + esc(p.note) + '</p>' : '');
+      ver.innerHTML = rows.map(function (r) { return '<div class="' + (r.over ? 'no' : 'yes') + '" data-r="' + r.cls + '">' + (r.over ? '❌ ' : '✅ ') + '<b>' + r.big + '</b> ' + esc(r.name) + ' → ' + (r.over ? '<b>시간 초과</b>' : '<b>' + p.tl + '초 안에 끝</b>') + ' (' + timeL(r.Ls) + ')</div>'; }).join('') + (p.note ? '<p class="c3-scale" style="flex-basis:100%;margin:0">' + esc(p.note) + '</p>' : '');
       el.dataset.slow = rows[0].over ? 'fail' : 'pass'; el.dataset.fast = rows[1].over ? 'fail' : 'pass';
     }
     CV.$$('.c3-probs button', el).forEach(function (b) { b.onclick = function () { pi = +b.dataset.i; paint(); }; });

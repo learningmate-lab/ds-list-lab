@@ -371,7 +371,7 @@
     CV.form(host, {
       fields: [{ k: 'seq', label: '리스트(쉼표) 또는 문자열', v: '0,1,2,3,4,5,6,7,8,9', w: 220 }, { k: 'sl', label: '슬라이스 [start:stop:step]', v: '2:7:2', w: 110 }],
       buttons: [{ t: '잘라 보기', a: 'run', cls: 'pri' }],
-      presets: [{ t: '2:7:2', v: { sl: '2:7:2' } }, { t: '-3:', v: { sl: '-3:' } }, { t: '::-1', v: { sl: '::-1' } }, { t: '5:1:-2', v: { sl: '5:1:-2' } }, { t: '5:1', v: { sl: '5:1' } }, { t: "'programmers' [1:5]", v: { seq: 'programmers', sl: '1:5' } }],
+      presets: [{ t: '2:7:2', v: { sl: '2:7:2' } }, { t: '-3:', v: { sl: '-3:' } }, { t: '::-1', v: { sl: '::-1' } }, { t: '5:1:-2', v: { sl: '5:1:-2' } }, { t: '5:1', v: { sl: '5:1' } }, { t: "'algorithm' [1:5]", v: { seq: 'algorithm', sl: '1:5' } }],
       on: function (a, v) { return run(v.seq, v.sl); },
     });
     P = CV.player(host, { id: 'py-slice', code: 'a = []', codeTitle: 'Python', draw: sliceDraw(svg), interval: 1300, onLoad: function (st) { var n = st[0].n, W = Math.max(260, 30 + n * Math.min(38, 340 / n) + 30); svg.setAttribute('viewBox', '0 0 ' + W + ' 200'); svg.style.maxWidth = Math.round(W * 1.45) + 'px'; } });
@@ -672,7 +672,7 @@
     P.load(st);
   });
 
-  // ------------------------------------------------------------------ 입출력 (입출력형 문제)
+  // ------------------------------------------------------------------ 입력 · 출력
   function ioSteps(line) {
     var toks = line.trim().split(/\s+/).filter(Boolean), st = [];
     var base = { line0: line.trim(), toks: toks, ints: null, outs: [], stage: 0 };
@@ -733,7 +733,7 @@
         P.load(ioSteps(v.line));
       },
     });
-    P = CV.player(host, { id: 'py-io', code: "line = input()          # '3 5 1 9'\nparts = line.split()\narr = list(map(int, parts))\nprint(sum(arr))\nprint(*arr)\nprint(' '.join(map(str, arr)))", codeTitle: 'Python (입출력형)', draw: ioDraw(svg, N), interval: 1500, onLoad: function (st) {
+    P = CV.player(host, { id: 'py-io', code: "line = input()          # '3 5 1 9'\nparts = line.split()\narr = list(map(int, parts))\nprint(sum(arr))\nprint(*arr)\nprint(' '.join(map(str, arr)))", codeTitle: 'Python (입력 · 출력)', draw: ioDraw(svg, N), interval: 1500, onLoad: function (st) {
       var t = st[0].toks, rowW = t.reduce(function (a, x) { return a + Math.max(34, textW("'" + x + "'", 15) + 16) + 6; }, 0), lineW = textW("'" + st[0].line0 + "'", 15) + 16;
       var W = (N ? 112 : 150) + Math.max(N ? 220 : 300, rowW, lineW) + 12;
       svg.setAttribute('viewBox', '0 0 ' + W + ' 236'); svg.style.maxWidth = Math.round(W * 1.3) + 'px';

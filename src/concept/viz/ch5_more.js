@@ -104,12 +104,12 @@
         P.load(revSteps(vals));
       },
     });
-    P = CV.player(host, { id: 'll-reverse', codeTitle: 'Python (이 사이트 문제 방식)', code: REV_CODE, draw: CV.drawLL(svg), onLoad: fitP(svg, 520, 196), interval: 1300 });
+    P = CV.player(host, { id: 'll-reverse', codeTitle: 'Python (더미 없는 head)', code: REV_CODE, draw: CV.drawLL(svg), onLoad: fitP(svg, 520, 196), interval: 1300 });
     P.stage.appendChild(svg);
     P.load(revSteps([10, 20, 30, 40]));
   });
 
-  // ------------------------------------------------------------------ 더미 없이 head를 다룰 때 (코딩테스트 문제 방식)
+  // ------------------------------------------------------------------ 더미 없이 head를 다룰 때
   CV.def('ll-head', function (host) {
     var svg = CV.svg(560, 200, '', 'head를 다룰 때 주의할 점'), P;
     var draw = CV.drawLL(svg);
@@ -122,7 +122,7 @@
       var s = new LLS([10, 20, 30], { x0: 120, y0: 60 }), S = [];
       var ids = s.chain();
       s.ptr.head = { t: ids[0], cls: 'red' };
-      S.push({ line: 0, cap: '더미가 없는 리스트(이 사이트의 연결 리스트 문제 방식)의 **맨 앞**에 5를 넣어요. 앞 노드(prev)가 없어서 head 자체를 바꿔야 해요.', ll: s.snap() });
+      S.push({ line: 0, cap: '더미가 없는 리스트의 **맨 앞**에 5를 넣어요. 앞 노드(prev)가 없어서 head 자체를 바꿔야 해요.', ll: s.snap() });
       var nid = s.add(5, 16, 140);
       s.ptr.node = { t: nid, cls: 'org', below: true };
       S.push({ line: 1, cap: '`node = Node(5)` : 새 노드가 생겼어요.', ll: s.snap() });
@@ -131,7 +131,7 @@
       s.ptr.head.t = nid;
       S.push({ line: 3, cap: '② `head = node` : head가 5를 가리켜요. 이 줄이 없으면 head는 여전히 10이라 5는 리스트에 안 보여요.', ll: s.snap() });
       s.head = nid; s.x0 = 16; s.flow(); s.lc = {}; delete s.ptr.node;
-      S.push({ line: 4, tone: 'good', cap: '③ `return head` : 함수 안에서 바꾼 head는 **돌려줘야** 밖에서도 바뀌어요. 문제의 solution이 head를 return하는 이유예요. 결과 [5, 10, 20, 30].', ll: s.snap() });
+      S.push({ line: 4, tone: 'good', cap: '③ `return head` : 함수 안에서 바꾼 head는 **돌려줘야** 밖에서도 바뀌어요. 그래서 이런 함수는 head를 return해요. 결과 [5, 10, 20, 30].', ll: s.snap() });
       return S;
     }
     function moveHead() {
@@ -147,13 +147,13 @@
       var nid = s.add(40, s.n[ids[2]].x + s.step, s.y0); s.nx[ids[2]] = nid; s.lc = {}; s.lc[ids[2]] = 'new';
       S.push({ line: 3, cap: '`head.next = Node(40)` : 40은 잘 붙었어요.', ll: s.snap() });
       s.notes = [{ k: 'r', x: 16, y: 150, s: '돌려받은 리스트: [30, 40]  ← 10, 20이 사라짐!', cls: 'red', a: 'start' }];
-      S.push({ line: 4, tone: 'bad', cap: '`return head` 는 30을 돌려줘요. 채점기는 [30, 40]을 받아서 **오답**! 순회는 항상 `cur = head`로 **복사본 변수**를 움직이세요.', ll: s.snap() });
+      S.push({ line: 4, tone: 'bad', cap: '`return head` 는 30을 돌려줘요. 호출한 쪽은 [30, 40]만 받아서 **앞 노드를 잃어버려요**! 순회는 항상 `cur = head`로 **복사본 변수**를 움직이세요.', ll: s.snap() });
       return S;
     }
     function noneErr() {
       var s = new LLS([], { x0: 16, y0: 60 }), S = [];
       s.notes = [{ k: 'h', x: 16, y: 80, s: 'head = None   (빈 리스트)', cls: 'org', a: 'start' }];
-      S.push({ line: 0, cap: '빈 리스트(head = None)가 들어오면 어떻게 될까요? 숨은 테스트에는 **빈 입력**이 자주 들어 있어요.', ll: s.snap() });
+      S.push({ line: 0, cap: '빈 리스트(head = None)가 들어오면 어떻게 될까요? 빈 리스트는 코드를 확인할 때 꼭 따져 봐야 하는 **경계 경우**예요.', ll: s.snap() });
       s.notes = [{ k: 'h', x: 16, y: 80, s: 'head = None   (빈 리스트)', cls: 'org', a: 'start' }, { k: 'c', x: 16, y: 106, s: 'cur = None', cls: 'org', a: 'start' }];
       S.push({ line: 1, cap: '`cur = head` → cur도 None이에요.', ll: s.snap() });
       s.notes.push({ k: 'e', x: 16, y: 150, s: "AttributeError: 'NoneType' object has no attribute 'next'", cls: 'red', a: 'start' });
@@ -164,7 +164,7 @@
     CV.tabs(host, [{ t: '맨 앞에 넣기', s: 'head가 바뀌면 return' }, { t: '❌ head로 직접 순회', s: '앞부분을 잃어버림', bad: true }, { t: '❌ None.next 오류', s: '빈 리스트를 잊으면', bad: true }], function (i) {
       if (!P) return; P.setCode(CODES[i]); P.load(gens[i]());
     });
-    P = CV.player(host, { id: 'll-head', codeTitle: 'Python (이 사이트 문제 방식)', code: CODES[0], draw: draw, onLoad: fitP(svg, 520, 196) });
+    P = CV.player(host, { id: 'll-head', codeTitle: 'Python (더미 없는 head)', code: CODES[0], draw: draw, onLoad: fitP(svg, 520, 196) });
     P.stage.appendChild(svg);
     P.load(front());
   });
@@ -277,7 +277,7 @@
         P.load(josSteps(+v.n, +v.k));
       },
     });
-    P = CV.player(host, { id: 'cl-josephus', codeTitle: '이 사이트 cl-josephus 방식', code: JOS_CODE, draw: draw, interval: 1000 });
+    P = CV.player(host, { id: 'cl-josephus', codeTitle: 'Python (원형 연결 리스트로 요세푸스)', code: JOS_CODE, draw: draw, interval: 1000 });
     P.stage.appendChild(svg);
     P.load(josSteps(7, 3));
   });

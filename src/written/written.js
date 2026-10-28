@@ -245,9 +245,9 @@
     var cxN = QS.filter(function (q) { return q.cx; }).length;
     var nOpen = noteCount(true);
     return '<section class="hero whero"><div>' +
-      '<p class="eyebrow">📢 중간고사 형식이 바뀌었어요 · 지필 시험</p>' +
+      '<p class="eyebrow">📢 중간고사 · 지필 시험 (Closed Book)</p>' +
       '<h1>자료구조 필기시험 연습실</h1>' +
-      '<p class="lead">프로그래머스 코딩 시험은 <b>연기</b>되고, <b>종이 시험(Closed Book · Closed Notebook)</b>으로 바뀌었어요. 긴 논술 대신 <b>객관식 · 단답형 · 짧은 서술형</b>이 섞여 나오고, <b>실제 자료구조 코드의 일부를 채우는 문제</b>도 나와요. 개념을 <b>정확히</b> 알고 있는지 보는 시험이에요.</p>' +
+      '<p class="lead">중간고사는 책 · 노트 없이 보는 <b>종이 시험(Closed Book · Closed Notebook)</b>이에요. 긴 논술 대신 <b>객관식 · 단답형 · 짧은 서술형</b>이 섞여 나오고, <b>실제 자료구조 코드의 일부를 채우는 문제</b>와 <b>복잡도(O · Θ · Ω)</b> 문제도 나와요. 개념을 <b>정확히</b> 알고 있는지 보는 시험이에요.</p>' +
       '<div class="dday"><b>' + dday + '</b><span><strong>중간고사 11/3 (화) · 필기 90분 · 25~30문항</strong>Ch.1 ~ Ch.6 · 강의 자료 + 교재 「쉽게 배우는 자료구조 with 파이썬」</span></div>' +
       '<div class="hero-cta"><button class="btn pri lg" data-w="exam">' + (live ? '진행 중인 필기 모의고사 이어 하기' : '필기 모의고사 (28문항 · 90분)') + '</button><button class="btn lg" data-w="start">단원별 · 유형별 연습</button>' +
       '<a class="btn lg" href="#/w/notes">📒 오답노트' + (nOpen ? ' <span class="wcnt">' + nOpen + '</span>' : '') + '</a></div>' +
@@ -649,6 +649,8 @@
   WX.noteCount = noteCount;
   WX.countCh = function (ch) { return QS.filter(function (q) { return q.ch === ch; }).length; };
   WX.startChapter = function (ch) { var f = pf(); f.order = f.order || 'seq'; startPractice(QS.filter(function (q) { return q.ch === ch; }), 'Ch.' + ch + ' ' + (CHN[ch] || '')); };
+  WX.countType = function (t) { return QS.filter(function (q) { return q.type === t; }).length; };
+  WX.startType = function (t) { startPractice(QS.filter(function (q) { return q.type === t; }), TYN[t] || t); };
   WX.examLive = function () { var ex = LSg('exam', null); return !!(ex && !ex.done && Date.now() < ex.end); };
   WX._t = { normShort: normShort, normCode: normCode, grade: grade, pickExam: pickExam, TEMPLATES: TEMPLATES, QS: function () { return QS; }, BYQ: function () { return BYQ; }, questionHTML: questionHTML, feedbackHTML: feedbackHTML, startExam: startExam, finishExam: finishExam, fullCode: fullCode };
 })();

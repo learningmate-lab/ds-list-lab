@@ -26,9 +26,7 @@ def build(data):
     css = '\n'.join(f.read_text(encoding='utf-8') for f in css_files if f.exists())
     uri = lambda f, t: 'data:%s;base64,' % t + base64.b64encode((H / f).read_bytes()).decode()
     img = {'mascot': uri('brand_mascot.webp', 'image/webp'), 'logo': uri('brand_logo.png', 'image/png')}
-    payload = ('window.DSL = {DATA: ' + js_str(data) + ',\nIMG: ' + js_str(img) +
-               ',\nHARNESS: ' + js_str((H / 'harness.py').read_text(encoding='utf-8')) +
-               ',\nWORKER: ' + js_str((H / 'worker.js').read_text(encoding='utf-8')) + '};')
+    payload = 'window.DSL = {DATA: ' + js_str(data) + ',\nIMG: ' + js_str(img) + '};'
     # 개념 정리: 엔진 → 그림(viz) → 단원 내용(content) → 앱. 파일마다 <script>를 나눠서 한 파일의 오류가 다른 파일을 막지 않게 함
     cjs = [C / 'engine.js'] + sorted((C / 'viz').glob('*.js')) + sorted((C / 'content').glob('*.js')) + [H / 'written' / 'written.js', H / 'app.js']
     js = '\n</script>\n<script>\n'.join('/* %s */\n' % f.relative_to(H).as_posix() + f.read_text(encoding='utf-8').replace('</script', '<\\/script') for f in cjs)

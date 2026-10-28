@@ -223,7 +223,7 @@
       st.push({ line: 1, tone: 'bad', cap: '`prev.next = newNode` 를 먼저 하면 20 → 30 연결이 끊어져요. 이제 **30을 가리키는 변수가 하나도 없어서** 30, 40을 다시는 찾을 수 없어요 (회색 = 잃어버린 노드).', ll: s.snap() });
       s.nx[nid] = nid; s.rt = {}; s.rt[nid] = 'self'; s.lc[nid] = 'bad';
       s.notes = s.notes.slice(0, 1).concat([{ k: 'loop', x: s.n[nid].x + LL.W + 10, y: s.n[nid].y - 26, s: '자기 자신을 가리킴!', cls: 'red', a: 'start' }]);
-      st.push({ line: 2, tone: 'bad', cap: '`newNode.next = prev.next` 인데 prev.next는 **이미 newNode**예요. 그래서 25가 자기 자신을 가리켜요. next를 따라가면 25 → 25 → 25 … **끝나지 않아요** (무한 반복 / 시간 초과).', ll: s.snap() });
+      st.push({ line: 2, tone: 'bad', cap: '`newNode.next = prev.next` 인데 prev.next는 **이미 newNode**예요. 그래서 25가 자기 자신을 가리켜요. next를 따라가면 25 → 25 → 25 … **끝나지 않아요** (무한 반복).', ll: s.snap() });
       st.push({ line: [1, 2], tone: 'bad', cap: '결과: 10 → 20 → 25 → 25 → … 30과 40은 사라졌어요. 규칙: **새 노드가 뒤를 먼저 잡고(①), 그다음 앞이 새 노드를 가리킨다(②)**. “뒤 먼저, 앞 나중”!', ll: s.snap() });
       return st;
     }

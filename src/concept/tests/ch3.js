@@ -42,7 +42,7 @@ CVT.add('ch3', 'in: list 26 → 6 comparisons, set 26 → bucket 2, 2 comparison
   H.tab('c3-inset', 0); H.form('c3-inset', { x: '26' });
   return (l.cnt === 6 && s.cnt === 2 && s.k === 2 && s.hit && s2.cnt === 0) || [l.cnt, s.cnt, s.k, s2.cnt].join(',');
 });
-CVT.add('ch3', 'eff: perf-dup at n=100,000 → O(n²) 시간 초과, O(n) 통과; at n=1,000 both pass', async () => {
+CVT.add('ch3', 'eff: 같은 수 찾기 at n=100,000 → O(n²) 시간 초과, O(n) 2초 안; at n=1,000 both fine', async () => {
   var b = H.box('c3-eff').querySelector('.c3-box'); b.querySelector('.c3-probs button[data-i="0"]').click();
   b.querySelector('.c3-chips button[data-v="500"]').click();
   var big = b.dataset.slow + '/' + b.dataset.fast, t = b.querySelector('.c3-verdict').innerText;
@@ -51,7 +51,7 @@ CVT.add('ch3', 'eff: perf-dup at n=100,000 → O(n²) 시간 초과, O(n) 통과
   b.querySelector('.c3-chips button[data-v="500"]').click();
   return (big === 'fail/pass' && small === 'pass/pass' && /시간 초과/.test(t)) || big + ' ' + small;
 });
-CVT.add('ch3', 'eff: perf-fib recursion fails even at n=1,000', async () => {
+CVT.add('ch3', 'eff: 재귀 피보나치 is too slow even at n=1,000', async () => {
   var b = H.box('c3-eff').querySelector('.c3-box'); b.querySelector('.c3-probs button[data-i="4"]').click();
   b.querySelector('.c3-chips button[data-v="300"]').click();
   var r = b.dataset.slow + '/' + b.dataset.fast;

@@ -420,21 +420,8 @@
     warn: ['⚠️', '자주 틀리는 것'],
     exam: ['📝', '시험 포인트'],
     info: ['🔎', '더 알아보기'],
-    code: ['💻', '코딩 연습 포인트'],
+    fill: ['✏️', '코드 빈칸 대비'],
   };
-  // 단원의 문제: units 항목 'linked' = 그 단원 전체, 'lab/스택' = lab 단원 중 소주제(sub)가 '스택'인 것
-  function inUnits(c, p) {
-    return (c.units || []).some(function (u) { var k = u.split('/'); return k[0] === p.unit && (!k[1] || k[1] === p.sub); });
-  }
-  CV.inUnits = inUnits;
-  function unitNames(c, ctx) {
-    var seen = {}, out = [];
-    (c.units || []).forEach(function (u) {
-      var k = u.split('/'), nm = ctx.UNIT[k[0]] ? ctx.UNIT[k[0]].name : k[0];
-      if (!seen[nm]) { seen[nm] = 1; out.push(nm); }
-    });
-    return out;
-  }
   function store(ctx) { return ctx.LS.get('concept', null) || { seen: {}, quiz: {} }; }
   function chapStat(ctx, c) {
     var s = store(ctx), seen = 0, q = 0, qok = 0;
@@ -467,22 +454,22 @@
     el.innerHTML = topbar(ctx, '개념 정리') +
       '<main class="cvh">' +
       '<section class="cvh-hero"><div><p class="eyebrow">중간고사 범위 Ch.1 ~ Ch.6 · 그림으로 보는 자료구조</p><h1>개념 정리</h1>' +
-      '<p class="lead">단원마다 <b>움직이는 그림</b>을 한 단계씩 넘겨 보고, 핵심 정리 → 시험 포인트 → <b>개념 체크</b> 순서로 확인해요. 📝 <b>시험 포인트</b>는 필기 시험(지필 · Closed Book) 기준이고, 💻 코딩 연습 포인트는 코딩 문제용이에요. 다 보면 그 단원 <b>필기 문제</b>와 코딩 문제를 바로 풀러 갈 수 있어요.</p>' +
+      '<p class="lead">단원마다 <b>움직이는 그림</b>을 한 단계씩 넘겨 보고, 핵심 정리 → 시험 포인트 → <b>개념 체크</b> 순서로 확인해요. 📝 <b>시험 포인트</b>와 ✏️ <b>코드 빈칸 대비</b>는 필기 시험(지필 · Closed Book) 기준이에요. 다 보면 그 단원 <b>필기 문제</b>를 바로 풀러 갈 수 있어요.</p>' +
       '<div class="cvh-prog"><div class="ring" style="--p:' + all + '"><span>' + Math.round(all) + '<small>%</small></span></div><div><b>전체 진도</b><span>그림을 본 섹션 + 맞힌 개념 체크 기준</span>' +
       (last && CV.chapters.some(function (c) { return c.id === last; }) ? '<a class="btn sm pri" href="#/learn/' + last + '">이어서 보기 →</a>' : '<a class="btn sm pri" href="#/learn/' + CV.chapters[0].id + '">Ch.1부터 시작 →</a>') + '</div></div>' +
       '</div>' + (ctx.IMG.mascot ? '<img class="mascot" src="' + ctx.IMG.mascot + '" alt="">' : '') + '</section>' +
-      (ctx.UNIT.lab ? '<button class="cvh-lab" id="cvh-lab"><span class="ic">✍️</span><span><b>시험 대비: 실습 코드 직접 구현 ' + ctx.PROBS.filter(function (p) { return p.unit === 'lab'; }).length + '문제</b><small>수업 실습 파일(LinkedListBasic · 원형 · 이중 연결 리스트 · ListStack · LinkedStack · postfix)의 메서드를 직접 완성해요. 개념을 본 뒤 바로 풀어 보세요.</small></span><em>문제 보기 →</em></button>' : '') +
+      (ctx.written && ctx.written.countType && ctx.written.countType('fill') ? '<button class="cvh-lab" id="cvh-lab"><span class="ic">✍️</span><span><b>시험 대비: 코드 빈칸 ' + ctx.written.countType('fill') + '문항</b><small>수업 실습 코드(LinkedListBasic · 원형 · 이중 연결 리스트 · ListStack · LinkedStack · postfix)와 재귀 · 배열 리스트 코드의 빈칸을 채워요. 개념을 본 뒤 바로 풀어 보세요.</small></span><em>풀어 보기 →</em></button>' : '') +
       '<section class="cvh-grid">' + CV.chapters.map(function (c, i) {
-        var s = stats[i], np = ctx.PROBS.filter(function (p) { return inUnits(c, p); }).length;
+        var s = stats[i], np = ctx.written ? ctx.written.count(c.no) : 0;
         return '<a class="cvc" href="#/learn/' + c.id + '" style="--cc:' + (c.color || '#286b82') + '">' +
           '<div class="cvc-art">' + (c.art || '') + '</div>' +
           '<div class="cvc-b"><span class="cvc-no">Ch.' + c.no + '</span><h3>' + esc(c.title) + '</h3><p>' + esc(c.sub) + '</p>' +
           '<ul>' + c.sections.slice(0, 6).map(function (x) { return '<li>' + esc(x.short || x.title) + '</li>'; }).join('') + (c.sections.length > 6 ? '<li>…</li>' : '') + '</ul>' +
-          '<div class="cvc-f"><div class="bar"><i style="width:' + s.pct + '%"></i></div><span>' + s.pct + '%</span>' + (np ? '<em>' + np + '문제</em>' : '<em>개념</em>') + '</div></div></a>';
+          '<div class="cvc-f"><div class="bar"><i style="width:' + s.pct + '%"></i></div><span>' + s.pct + '%</span>' + (np ? '<em>필기 ' + np + '문항</em>' : '<em>개념</em>') + '</div></div></a>';
       }).join('') + '</section>' +
       '<p class="foot">그림 아래 ◀ ▶ 버튼(또는 키보드 ← →)으로 한 단계씩 넘기고, ▶ 자동 재생과 속도(0.5× ~ 2×)도 바꿀 수 있어요. 코드 예시는 강의 교재와 비슷한 스타일로 새로 쓴 것이라 표현이 조금 다를 수 있어요.</p>' +
       '</main>';
-    var lb = CV.$('#cvh-lab', el); if (lb) lb.onclick = function () { ctx.openUnit('lab'); };
+    var lb = CV.$('#cvh-lab', el); if (lb) lb.onclick = function () { ctx.written.startType('fill'); };
   }
 
   function showChapter(el, c, secId, ctx) {
@@ -495,7 +482,7 @@
       '<div class="cvp" style="--cc:' + (c.color || '#286b82') + '">' +
       '<aside class="cvp-toc"><a class="toc-back" href="#/learn">← 개념 정리 홈</a><div class="toc-ch">Ch.' + c.no + ' ' + esc(c.title) + '</div><ol>' +
       c.sections.map(function (s, i) { return '<li><a href="#/learn/' + c.id + '/' + s.id + '" data-sec="' + s.id + '"><span>' + c.no + '-' + (i + 1) + '</span>' + esc(s.short || s.title) + '</a></li>'; }).join('') +
-      '<li><a href="#/learn/' + c.id + '/practice" data-sec="practice" class="toc-go"><span>▶</span>문제 풀러 가기</a></li></ol>' +
+      '<li><a href="#/learn/' + c.id + '/practice" data-sec="practice" class="toc-go"><span>▶</span>필기 문제 풀기</a></li></ol>' +
       '<div class="toc-prog"><div class="bar"><i style="width:' + st.pct + '%"></i></div><small id="tocp">섹션 ' + st.seen + '/' + st.n + ' · 체크 ' + st.qok + '/' + st.q + '</small></div></aside>' +
       '<main class="cvp-main">' +
       '<header class="cvp-head"><div class="cvp-art">' + (c.art || '') + '</div><div><p class="eyebrow">Ch.' + c.no + (c.book ? ' · ' + esc(c.book) : '') + '</p><h1>' + esc(c.title) + '</h1><p class="lead">' + CV.md(c.intro || c.sub) + '</p>' +
@@ -503,7 +490,7 @@
       '<div id="secs"></div>' +
       '<section class="cvs practice" id="sec-practice" data-sec="practice"></section>' +
       '<nav class="cvp-nav">' + (prevC ? '<a class="btn" href="#/learn/' + prevC.id + '">← Ch.' + prevC.no + ' ' + esc(prevC.title) + '</a>' : '<a class="btn" href="#/learn">← 개념 정리 홈</a>') +
-      (nextC ? '<a class="btn pri" href="#/learn/' + nextC.id + '">Ch.' + nextC.no + ' ' + esc(nextC.title) + ' →</a>' : '<a class="btn pri" href="#/">문제 목록으로 →</a>') + '</nav>' +
+      (nextC ? '<a class="btn pri" href="#/learn/' + nextC.id + '">Ch.' + nextC.no + ' ' + esc(nextC.title) + ' →</a>' : '<a class="btn pri" href="#/">처음으로 →</a>') + '</nav>' +
       '</main></div>';
     var secs = CV.$('#secs', el);
     var S = store(ctx);
@@ -528,24 +515,13 @@
       }
       if (s.quiz && s.quiz.length) CV.quiz(sec, s.quiz, c.id + '.' + s.id, function (k, ok) { if (ok) S.quiz[k] = 1; save(); });
     });
-    // 문제 풀러 가기
-    var probs = ctx.PROBS.filter(function (p) { return inUnits(c, p); }).sort(function (a, b) { return (b.unit === 'lab') - (a.unit === 'lab') || a.level - b.level || a.idx - b.idx; });
-    var pr = CV.$('#sec-practice', el);
-    if (probs.length) {
-      var okN = probs.filter(function (p) { return ctx.status(p.id) === 'ok'; }).length;
-      pr.innerHTML = '<div class="pr-h"><div><span class="pr-ic">▶</span><h2>이 단원 문제 풀러 가기</h2><p>' + (unitNames(c, ctx).map(esc).join(' · ')) + ' · ' + probs.length + '문제 · 해결 ' + okN + '개 · 쉬운 것(Lv.0)부터 추천</p></div><button class="btn pri" id="pr-unit">단원별 목록에서 보기</button></div>' +
-        '<div class="pr-list">' + probs.map(function (p) {
-          var s = ctx.status(p.id);
-          return '<a class="pr-it" href="#/p/' + p.id + '"><i class="st ' + (s || '') + '" title="' + (s === 'ok' ? '해결' : s === 'try' ? '풀이 중' : '안 푼 문제') + '"></i><span class="lv lv' + p.level + '">Lv.' + p.level + '</span>' + (p.unit === 'lab' ? '<em class="labtag">실습</em>' : '') + '<b>' + esc(p.title) + '</b>' + (p.sub ? '<small>' + esc(p.sub) + '</small>' : '') + '</a>';
-        }).join('') + '</div>';
-      CV.$('#pr-unit', pr).onclick = function () { ctx.openUnit(c.units[0].split('/')[0]); };
-    } else {
-      pr.innerHTML = '<div class="pr-h"><div><span class="pr-ic">▶</span><h2>이 단원 문제 풀러 가기</h2><p>Ch.' + c.no + '은 개념 단원이라 따로 코딩 문제가 없어요. 여기서 익힌 “자료구조 = 데이터를 담는 방법 + 연산” 관점으로 다음 단원 문제를 풀어 보세요.</p></div><a class="btn pri" href="#/learn/' + (nextC ? nextC.id : '') + '">다음 단원 보기</a></div>';
-    }
-    // 필기 문제 (시험 형식) — 맨 위에
-    if (ctx.written && ctx.written.count(c.no)) {
-      pr.insertAdjacentHTML('afterbegin', '<div class="pr-w"><div><span class="pr-ic">✍️</span><h2>이 단원 필기 문제 (시험 형식)</h2><p>객관식 · 단답형 · 짧은 서술형 · 코드 빈칸 ' + ctx.written.count(c.no) + '문항 · 바로 채점 · 오답노트</p></div><button class="btn pri" id="pr-w">필기 문제 풀기</button></div>');
+    // 이 단원 필기 문제 풀기
+    var pr = CV.$('#sec-practice', el), nW = ctx.written ? ctx.written.count(c.no) : 0;
+    if (nW) {
+      pr.innerHTML = '<div class="pr-h"><div><span class="pr-ic">✍️</span><h2>이 단원 필기 문제 (시험 형식)</h2><p>객관식 · 단답형 · 짧은 서술형 · 코드 빈칸 ' + nW + '문항 · 바로 채점 · 오답노트</p></div><button class="btn pri" id="pr-w">필기 문제 풀기</button></div>';
       CV.$('#pr-w', pr).onclick = function () { ctx.written.start(c.no); };
+    } else {
+      pr.innerHTML = '<div class="pr-h"><div><span class="pr-ic">▶</span><h2>다음 단원으로</h2><p>Ch.' + c.no + '은 개념 단원이에요. 여기서 익힌 “자료구조 = 데이터를 담는 방법 + 연산” 관점으로 다음 단원을 봐 주세요.</p></div><a class="btn pri" href="#/learn/' + (nextC ? nextC.id : '') + '">다음 단원 보기</a></div>';
     }
     // 목차: 클릭 시 스크롤 · 보이는 섹션 표시 · 읽음 기록
     var view = el;

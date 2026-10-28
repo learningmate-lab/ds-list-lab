@@ -11,9 +11,9 @@ CVT.add('ch4', 'slice: a[2:7:2] = [2,4,6], a[::-1], a[-3:], a[5:1:-2], a[5:1]', 
   var bad = cases.filter(function (c) { return c4slice(L, c[0]) !== JSON.stringify(c[1]); });
   return !bad.length || bad.map(function (c) { return c[0] + ' → ' + c4slice(L, c[0]); }).join(' ; ');
 });
-CVT.add('ch4', "slice on string 'programmers'[1:5] = 'rogr', [::-2]", async () => {
-  var a = c4slice('programmers', '1:5'), b = c4slice('programmers', '::-2');
-  return (a === JSON.stringify(['r', 'o', 'g', 'r']) && b === JSON.stringify(['s', 'e', 'm', 'r', 'o', 'p'])) || a + ' / ' + b;
+CVT.add('ch4', "slice on string 'algorithm'[1:5] = 'lgor', [::-2]", async () => {
+  var a = c4slice('algorithm', '1:5'), b = c4slice('algorithm', '::-2');
+  return (a === JSON.stringify(['l', 'g', 'o', 'r']) && b === JSON.stringify(['m', 't', 'r', 'g', 'a'])) || a + ' / ' + b;
 });
 CVT.add('ch4', 'slice: step 0 and bad input show errors', async () => {
   var e1 = H.form('py-slice', { seq: '0,1,2,3,4,5,6,7,8,9', sl: '1:8:0' });

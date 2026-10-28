@@ -24,13 +24,15 @@ function check(name, ok, info) { results.push([ok ? 'PASS' : 'FAIL', name, info 
 
     // ---------- 홈
     const home = await b.ev(`({ hero: document.querySelector('.whero h1') && document.querySelector('.whero h1').textContent, fmt: document.querySelector('.wfmt') ? document.querySelector('.wfmt').innerText : '',
-      first: document.querySelector('.home').firstElementChild.className, code: !!document.querySelector('.code-sec [data-act=exam]'), codeH: (document.querySelector('.code-sec h2')||{}).textContent,
-      chs: document.querySelectorAll('.wch').length, py: DSL.app.Runner.state, n: DSL.DATA.written.questions.length })`);
+      first: document.querySelector('.home').firstElementChild.className, code: !!document.querySelector('.code-sec, #coding, .plist, .ide'),
+      chs: document.querySelectorAll('.wch').length, worker: typeof Worker !== 'undefined' && !!(DSL.HARNESS || DSL.WORKER || (DSL.app && DSL.app.Runner)), n: DSL.DATA.written.questions.length, probs: !!DSL.DATA.problems,
+      text: document.body.innerText })`);
     check('home: written mode first (hero)', /필기/.test(home.hero) && /whero/.test(home.first), home.hero + ' / ' + home.first);
     check('home: format box (Closed Book · 90분 · 25~30문항 · 유형)', /Closed Book/.test(home.fmt) && /1시간 30분/.test(home.fmt) && /25~30/.test(home.fmt) && /코드 빈칸/.test(home.fmt), home.fmt);
-    check('home: coding practice kept, labelled postponed', home.code && /프로그래머스 시험은 연기됨/.test(home.codeH), home.codeH);
+    check('home: no coding practice section / problem list', !home.code && !home.probs, J({ code: home.code, probs: home.probs }));
+    check('home: no 프로그래머스 / 코딩 wording', !/프로그래머스|programmers|코딩/i.test(home.text), (home.text.match(/.{0,30}(프로그래머스|programmers|코딩).{0,30}/i) || [''])[0]);
     check('home: 6 chapter cards, 150~220 questions', home.chs === 6 && home.n >= 150 && home.n <= 220, home.chs + ' / ' + home.n);
-    check('home: Python not downloaded on home', home.py === 'idle', home.py);
+    check('home: no Python runner (Pyodide / worker) shipped', !home.worker, home.worker);
     await b.shot(path.join(OUT, 'home_1440.png'));
     await fullShot(path.join(OUT, 'home_1440_full.png'), 1440);
 

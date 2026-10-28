@@ -124,9 +124,8 @@ CVT.add('ch5', 'compare get(4): array 1 vs linked 5', async () => {
   var st = H.end(H.player('ll-compare'));
   return (st.ca === 1 && st.cl === 5) || JSON.stringify([st.ca, st.cl]);
 });
-CVT.add('ch5', 'practice list includes lab problems first', async () => {
-  var items = [...document.querySelectorAll('#sec-practice .pr-it')];
-  var firstLab = items[0] && items[0].querySelector('.labtag');
-  var n = items.filter(x => x.querySelector('.labtag')).length;
-  return (!!firstLab && n === 12) || ('lab items ' + n);
+CVT.add('ch5', 'practice section: written questions button only (no coding problem list)', async () => {
+  var sec = document.querySelector('#sec-practice');
+  var w = sec.querySelector('#pr-w'), list = sec.querySelectorAll('.pr-it, a[href^="#/p/"]').length;
+  return (!!w && list === 0 && /필기/.test(sec.innerText)) || ('button ' + !!w + ', coding links ' + list);
 });

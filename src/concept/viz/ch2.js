@@ -245,7 +245,7 @@
       out.push('RecursionError:');
       out.push(' maximum recursion');
       out.push(' depth exceeded');
-      s({ line: 2, tone: 'bad', err: true, cap: '한도를 넘자 **RecursionError**가 나며 프로그램이 멈춰요. 코딩테스트에서는 **런타임 에러**로 채점돼요. 해결법은 한도를 늘리는 게 아니라 **종료 조건을 넣는 것**이에요.' });
+      s({ line: 2, tone: 'bad', err: true, cap: '한도를 넘자 **RecursionError**가 나며 프로그램이 멈춰요. 해결법은 한도를 늘리는 게 아니라 **종료 조건을 넣는 것**이에요.' });
       return st;
     }
     function good() {
@@ -495,7 +495,7 @@
         sc.clear(); P.load(bsSteps(arr, x));
       },
     });
-    P = CV.player(host, { id: 'rec-bsearch', codeTitle: 'Python (이 사이트 문제 풀이)', code: BS, draw: draw, interval: 1600 });
+    P = CV.player(host, { id: 'rec-bsearch', codeTitle: 'Python (재귀 이진 탐색)', code: BS, draw: draw, interval: 1600 });
     P.stage.appendChild(svg);
     P.load(bsSteps(arr0, 23));
   });
